@@ -408,4 +408,9 @@ public class PhotoSortrView extends View implements
 		}
 		
 	}
+
+	@Override
+	public void touchOutSide(Img obj) {
+		//Toast.makeText(context, "outside tuch", 1).show();
+	}
 }

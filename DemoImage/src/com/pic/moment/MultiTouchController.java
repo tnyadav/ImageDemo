@@ -66,6 +66,7 @@ import java.lang.reflect.Method;
 
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 /**
  * A class that simplifies the implementation of multitouch in applications. Subclass this and read the fields here as needed in subclasses.
@@ -409,6 +410,8 @@ boolean b;
 					// Don't need any settling time if just placing one finger, there is no noise
 					mSettleStartTime = mSettleEndTime = mCurrPt.getEventTime();
 					
+				}else {
+					
 				}
 			}
 			break;
@@ -498,7 +501,9 @@ boolean b;
 			Log.i("MultiTouch", "Got here 7 - " + mMode + " " + mCurrPt.getNumTouchPoints() + " " + mCurrPt.isDown() + mCurrPt.isMultiTouch());
 	}
 
-    public int getMode() {
+   
+
+	public int getMode() {
         return mMode;
     }
 
@@ -852,5 +857,6 @@ boolean b;
 		 */
 		public void selectObject(T obj, PointInfo touchPoint);
 		public void bounce(T obj);
+		public void touchOutSide(T obj);
 	}
 }

@@ -51,7 +51,6 @@ private Button collageBack,collageDelete,collageFrame,collageAdd,collageShare,fr
 private final int RESULT_LOAD_IMAGE = 001;
 private final int CAPTURE_IMAGE = 002;
 private FrameLayout frameLayout;
-private LinearLayout frameContainer,bottomButtonContainer;
 Dialog dialog;
 Uri imageUri= null;
 boolean isPresent=false;
@@ -178,8 +177,7 @@ collageFrame.setOnClickListener(new OnClickListener() {
 	@Override
 	public void onClick(View arg0) {
 		
-		frameContainer.setVisibility(View.VISIBLE);
-		bottomButtonContainer.setVisibility(View.INVISIBLE);
+		
 	}
 });
 collageAdd = (Button)homeFragmentView.findViewById(R.id.collageAdd);
@@ -249,8 +247,7 @@ collageAdd.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				bottomButtonContainer.setVisibility(View.VISIBLE);
-				//emoticonContaner.setVisibility(View.VISIBLE);	
+			
 			}
 		});
 		dialog.show();
@@ -269,23 +266,10 @@ frameBotton.setOnClickListener(new OnClickListener() {
 	
 	@Override
 	public void onClick(View arg0) {
-		frameContainer.setVisibility(View.INVISIBLE);
-		bottomButtonContainer.setVisibility(View.VISIBLE);
-	}
-});
-/*emoticonClose=(TextView)homeFragmentView.findViewById(R.id.emoticonClose);
-emoticonClose.setOnClickListener(new OnClickListener() {
-	
-	@Override
-	public void onClick(View arg0) {
-		emoticonContaner.setVisibility(View.GONE);
 		
 	}
-});*/
-/*
-frameContainer=(LinearLayout)homeFragmentView.findViewById(R.id.frameContainer);
-bottomButtonContainer=(LinearLayout)homeFragmentView.findViewById(R.id.bottomButtonContainer);
-emoticonContaner=(HorizontalScrollView)homeFragmentView.findViewById(R.id.emoticonContaner);*/
+});
+
 
 frameLayout=(FrameLayout)homeFragmentView.findViewById(R.id.mainFrameContainer);
 photoSorter = new PhotoSortrView(picmomentActivity);
@@ -293,7 +277,7 @@ int []rectf=new int[2];
 collageFrame.getLocationOnScreen(rectf);
 
 photoSorter.setRectf(rectf);
-photoSorter.setDelete(collageDelete);/*
+photoSorter.setDelete(collageDelete);
 photoSorter.setOnTouchListener(new OnTouchListener() {
 	
 	@Override
@@ -402,7 +386,7 @@ photoSorter.setOnTouchListener(new OnTouchListener() {
 		return false;
 	}
 });
-*/frameLayout.addView(photoSorter);
+frameLayout.addView(photoSorter);
 collageDelete.setVisibility(View.GONE);
 collageFrame.setVisibility(View.GONE);
 collageShare.setVisibility(View.GONE);
