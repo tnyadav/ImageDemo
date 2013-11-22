@@ -22,4 +22,9 @@
     <style name="custom_dialog_theme_back">
         <item name="android:windowBackground">@android:color/white</item>
     </style>
+     <style name="Animations" />
+      <style name="Animations.MenuAnimation">
+        <item name="android:windowEnterAnimation">@anim/menu_animation_in</item>
+        <item name="android:windowExitAnimation">@anim/menu_animation_out</item>
+    </style>
 </resources>

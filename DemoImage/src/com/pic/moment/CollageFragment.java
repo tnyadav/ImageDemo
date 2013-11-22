@@ -52,8 +52,6 @@ private final int RESULT_LOAD_IMAGE = 001;
 private final int CAPTURE_IMAGE = 002;
 private FrameLayout frameLayout;
 private LinearLayout frameContainer,bottomButtonContainer;
-private HorizontalScrollView emoticonContaner;
-private TextView emoticonClose;
 Dialog dialog;
 Uri imageUri= null;
 boolean isPresent=false;
@@ -70,11 +68,23 @@ private String temPath= Environment.getExternalStorageDirectory()+"/PicMomentsTe
 		
 	}
 private void SetContent() {
+	
+	
 collageBack = (Button)homeFragmentView.findViewById(R.id.collageBack);
+
+collageBack.bringToFront();
+
 collageBack.setOnClickListener(new OnClickListener() {
 	
 	@Override
 	public void onClick(View arg0) {
+		Toast.makeText(picmomentActivity, "gfdgfdg", 1).show();
+	/*	LayoutInflater layoutInflater=picmomentActivity.getLayoutInflater();;
+		View	navigationViewContainer = layoutInflater.inflate(
+					R.layout.dialogback, null);
+		CustomMenu.show(picmomentActivity,navigationViewContainer);*/
+		
+		
 		
 		final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme_back);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -84,8 +94,8 @@ collageBack.setOnClickListener(new OnClickListener() {
 		wlp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
 		wlp.height=LayoutParams.WRAP_CONTENT;
 		wlp.width=LayoutParams.WRAP_CONTENT;
-		/*wlp.x=50;
-		wlp.y=150;*/
+		wlp.x=50;
+		wlp.y=150;
 		//wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
 		window.setAttributes(wlp);
 		//window.clearFlags(LayoutParams.FLAG_DIM_BEHIND);
@@ -176,7 +186,18 @@ collageAdd = (Button)homeFragmentView.findViewById(R.id.collageAdd);
 collageAdd.setOnClickListener(new OnClickListener() {
 	
 	@Override
-	public void onClick(View arg0) {// custom dialog
+	public void onClick(View arg0) {
+		
+		
+	/*	LayoutInflater layoutInflater=picmomentActivity.getLayoutInflater();;
+		View	navigationViewContainer = layoutInflater.inflate(
+					R.layout.dialogback, null);
+		CustomMenu.show(picmomentActivity,navigationViewContainer);*/
+		
+		
+		
+		
+		// custom dialog
 		final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(true);
@@ -229,7 +250,7 @@ collageAdd.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				bottomButtonContainer.setVisibility(View.VISIBLE);
-				emoticonContaner.setVisibility(View.VISIBLE);	
+				//emoticonContaner.setVisibility(View.VISIBLE);	
 			}
 		});
 		dialog.show();

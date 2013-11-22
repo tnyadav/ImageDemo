@@ -7,7 +7,7 @@
     android:orientation="vertical" >
 
     <Button
-        android:id="@+id/collageBack"
+        android:id="@+id/editBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
@@ -15,7 +15,7 @@
     </Button>
 
     <Button
-        android:id="@+id/collageDelete"
+        android:id="@+id/editDelete"
          android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -24,7 +24,7 @@
         android:background="@drawable/collage_delete_button_background" />
 
     <!-- <Button
-        android:id="@+id/collageFrame"
+        android:id="@+id/editFrame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -33,7 +33,7 @@
         android:background="@drawable/collage_frame_button_background" /> -->
 
     <Button
-        android:id="@+id/collageShare"
+        android:id="@+id/editShare"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -42,7 +42,7 @@
         android:background="@drawable/collage_share_button_background" />
 
     <Button
-        android:id="@+id/collageAdd"
+        android:id="@+id/editAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -54,7 +54,7 @@
         android:id="@+id/mainFrameContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/collageBack"
+        android:layout_below="@+id/editBack"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="150dp"
         android:layout_marginLeft="50dp"
