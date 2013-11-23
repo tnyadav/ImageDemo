@@ -2,12 +2,12 @@ package com.pic.moment;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
+
+import com.pic.moment.PopupProvider.frame;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -25,7 +25,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,12 +35,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class CollageFragment extends BaseFragment{
@@ -77,14 +71,13 @@ collageBack.setOnClickListener(new OnClickListener() {
 	
 	@Override
 	public void onClick(View arg0) {
-		Toast.makeText(picmomentActivity, "gfdgfdg", 1).show();
-	/*	LayoutInflater layoutInflater=picmomentActivity.getLayoutInflater();;
+		LayoutInflater layoutInflater=picmomentActivity.getLayoutInflater();;
 		View	navigationViewContainer = layoutInflater.inflate(
 					R.layout.dialogback, null);
-		CustomMenu.show(picmomentActivity,navigationViewContainer);*/
+		CustomMenu.show(picmomentActivity,navigationViewContainer);
 		
 		
-		
+	/*	
 		final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme_back);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(true);
@@ -166,7 +159,7 @@ collageBack.setOnClickListener(new OnClickListener() {
 			}
 		});
 	  
-		dialog.show();
+		dialog.show();*/
 	}
 });
 collageDelete = (Button)homeFragmentView.findViewById(R.id.collageDelete);
@@ -177,9 +170,18 @@ collageFrame.setOnClickListener(new OnClickListener() {
 	@Override
 	public void onClick(View arg0) {
 		
+		View	navigationViewContainer = PopupProvider.getFrame(picmomentActivity, new frame() {
+			
+			@Override
+			public void frameClicked(int index) {
+				Toast.makeText(picmomentActivity, ""+index, 1).show();
+			}
+		});
+		CustomMenu.show(picmomentActivity,navigationViewContainer);
 		
 	}
 });
+
 collageAdd = (Button)homeFragmentView.findViewById(R.id.collageAdd);
 collageAdd.setOnClickListener(new OnClickListener() {
 	
@@ -247,7 +249,14 @@ collageAdd.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-			
+				View	navigationViewContainer = PopupProvider.getEmocione(picmomentActivity, new frame() {
+					
+					@Override
+					public void frameClicked(int index) {
+						Toast.makeText(picmomentActivity, ""+index, 1).show();
+					}
+				});
+				CustomMenu.show(picmomentActivity,navigationViewContainer);
 			}
 		});
 		dialog.show();
@@ -261,7 +270,7 @@ collageShare.setOnClickListener(new OnClickListener() {
 	public void onClick(View arg0) {}
 });
 
-frameBotton=(Button)homeFragmentView.findViewById(R.id.collageFrame);
+/*frameBotton=(Button)homeFragmentView.findViewById(R.id.collageFrame);
 frameBotton.setOnClickListener(new OnClickListener() {
 	
 	@Override
@@ -269,7 +278,7 @@ frameBotton.setOnClickListener(new OnClickListener() {
 		
 	}
 });
-
+*/
 
 frameLayout=(FrameLayout)homeFragmentView.findViewById(R.id.mainFrameContainer);
 photoSorter = new PhotoSortrView(picmomentActivity);
@@ -277,7 +286,7 @@ int []rectf=new int[2];
 collageFrame.getLocationOnScreen(rectf);
 
 photoSorter.setRectf(rectf);
-photoSorter.setDelete(collageDelete);
+photoSorter.setDelete(collageDelete);/*
 photoSorter.setOnTouchListener(new OnTouchListener() {
 	
 	@Override
@@ -385,7 +394,7 @@ photoSorter.setOnTouchListener(new OnTouchListener() {
 		
 		return false;
 	}
-});
+});*/
 frameLayout.addView(photoSorter);
 collageDelete.setVisibility(View.GONE);
 collageFrame.setVisibility(View.GONE);

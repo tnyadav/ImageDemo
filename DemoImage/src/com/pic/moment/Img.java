@@ -4,6 +4,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 
 import com.pic.moment.MultiTouchController.PositionAndScale;
@@ -15,7 +16,7 @@ public class Img {
 	private Drawable drawable;
 	public Resources resources;
 	boolean deleted;
-
+	boolean bouncing=false;
 	private int width, height;
 
 	int displayWidth;
@@ -69,9 +70,13 @@ public class Img {
 		getMetrics(res);
 		this.width = drawable.getIntrinsicWidth();
 		this.height = drawable.getIntrinsicHeight();
+		
+		
+		
+		
 		float cx, cy, sx, sy;
-		cx = (float) /* (Math.random() * */(displayWidth) / 2;
-		cy = (float) /* (Math.random() * */(displayHeight) / 2;
+		cx = (float) /* (Math.random() * */(displayWidth) / 4;
+		cy = (float) /* (Math.random() * */(displayHeight) / 4;
 
 		float sc = (float) (Math.max(displayWidth, displayHeight)
 				/ (float) Math.max(width, height) * Math.random() * 0.3 + 0.2);
@@ -198,5 +203,30 @@ public class Img {
 	public float getMaxY() {
 		return maxY;
 	}
-
+	public void bounce() {
+		if (!bouncing) {
+			bouncing=true;
+			minX = minX -10;
+			maxX = maxX + 10;
+			minY = minY - 10;
+			maxY = maxY + 10;
+		
+			
+			//multiTouchController.selectedObject=null;
+			new Handler().postDelayed(new Runnable() {
+				
+				@Override
+				public void run() {
+					minX = minX+10 ;
+					maxX = maxX-10 ;
+					minY = minY+10 ;
+					maxY = maxY-10 ;
+					bouncing=false;
+					
+			}
+			}, 200);
+		}
+			
+	
+	}
 }

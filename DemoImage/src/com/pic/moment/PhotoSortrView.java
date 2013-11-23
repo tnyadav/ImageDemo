@@ -27,31 +27,26 @@ package com.pic.moment;
 
 import java.util.ArrayList;
 
-import com.pic.moment.MultiTouchController.MultiTouchObjectCanvas;
-import com.pic.moment.MultiTouchController.PointInfo;
-import com.pic.moment.MultiTouchController.PositionAndScale;
-
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.pic.moment.MultiTouchController.MultiTouchObjectCanvas;
+import com.pic.moment.MultiTouchController.PointInfo;
+import com.pic.moment.MultiTouchController.PositionAndScale;
 
 public class PhotoSortrView extends View implements
 		MultiTouchObjectCanvas<Img> {
@@ -79,8 +74,8 @@ public class PhotoSortrView extends View implements
 	private Button delete;
 	// --
 
-	private MultiTouchController<Img> multiTouchController = new MultiTouchController<Img>(
-			this);
+	private MultiTouchController<Img> multiTouchController/* = new MultiTouchController<Img>(
+			this)*/;
 
 	// --
 
@@ -110,15 +105,21 @@ public class PhotoSortrView extends View implements
 	public PhotoSortrView(Context context) {
 		this(context, null);
 		this.context = context;
+		 multiTouchController = new MultiTouchController<Img>(
+					this,context);
 
 	}
 
 	public PhotoSortrView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
+		 multiTouchController = new MultiTouchController<Img>(
+					this, context);
 	}
 
 	public PhotoSortrView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		 multiTouchController = new MultiTouchController<Img>(
+					this, context);
 		init(context);
 	}
 
@@ -174,6 +175,11 @@ public class PhotoSortrView extends View implements
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		// delete.setBackgroundResource(R.drawable.cl_deleteoff);
+	/*	if (getDraggableObjectAtPoint(currTouchPoint)==null && currTouchPoint      .getNumTouchPoints()==1) {
+			Toast.makeText(context, "outside", 1).show();
+		}
+		*/
+		
 		if (counter == 0) {
 			float spacing = mLinePaintTouchPointCircle.getFontSpacing();
 			float totHeight = spacing * infoLines.length;
@@ -232,11 +238,14 @@ public class PhotoSortrView extends View implements
 			return false;
 		}else {*/
 			if (mImages.size() > 0) {
+				/*if (getDraggableObjectAtPoint(currTouchPoint)==null) {
+					Toast.makeText(context, "outside", 1).show();
+				}*/
 				gestureDetector.onTouchEvent(event);
 				
 			}
-
-			return multiTouchController.onTouchEvent(event);
+			
+		return multiTouchController.onTouchEvent(event);
 		//}
 		
 
@@ -255,18 +264,9 @@ public class PhotoSortrView extends View implements
 			if (e1.getY() - e2.getY() > SWIPE_MIN_DISTANCE
 					&& Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
 			//	delete.setBackgroundResource(R.drawable.cl_deleteopen);
-				final Img img = multiTouchController.selectedObject;
-				img.centerX = (img.minX+img.maxX)/2;
-				img.centerY = (img.minY+img.maxY)/2;
-				final float minX;
-				final float maxX;
-				final float minY;
-				final float maxY,cx,cy;
-				minX=img.getMinX();
-				maxX=img.getMaxX();
-				minY=img.getMinY();
-				maxY=img.getMaxY();
-				
+				//final Img img = multiTouchController.selectedObject;
+				final Img img =getDraggableObjectAtPoint(currTouchPoint);
+	
 				img.deleted = true;
 				img.minX = img.displayWidth - 100;
 				img.maxX = img.displayWidth;
@@ -275,21 +275,15 @@ public class PhotoSortrView extends View implements
 				
 				
 				
-				cx = e1.getX();
+			/*	cx = e1.getX();
 				cy= e1.getY();
-
+*/
 				new Handler().postDelayed(new Runnable() {
 
 					@Override
 					public void run() {
 						delete.setBackgroundResource(R.drawable.cl_deleteoff);
 						
-						/*img.minX =minX;
-						img.maxX = maxX;
-						img.minY =minY;
-						img.maxY = maxY;*/
-						//img.centerX=cx;
-						//img.centerY=cy;
 					}
 				}, 100);
 				return true;
@@ -365,52 +359,12 @@ public class PhotoSortrView extends View implements
 		return ok;
 	}
 
-	
-
 	@Override
-	public void bounce(final Img img) {
-		if (!img.deleted){
-			final float minX;
-			final float maxX;
-			final float minY;
-			final float maxY; 
-			minX=img.getMinX();
-			maxX=img.getMaxX();
-			minY=img.getMinY();
-			maxY=img.getMaxY();
-			
-			img.minX = minX - 10;
-			img.maxX = maxX + 10;
-			img.minY = minY - 10;
-			img.maxY = maxY + 10;
-			//img.centerX = (img.minX+img.maxX)/2;
-		//	img.centerY = (img.minY+img.maxY)/2;
-			touch_disabled=true;
-			
-			//multiTouchController.selectedObject=null;
-			new Handler().postDelayed(new Runnable() {
-				
-				@Override
-				public void run() {
-					img.minX = minX ;
-					img.maxX = maxX ;
-					img.minY = minY ;
-					img.maxY = maxY ;
-				//	img.centerX = img.getCenterX();
-				//	img.centerY = img.getCenterY();
-					
-					touch_disabled=false;
-					
-					
-			}
-			}, 200);
-			
-		}
+	public void select(Img obj) {
+		Toast.makeText(context, "1", 1).show();
 		
 	}
 
-	@Override
-	public void touchOutSide(Img obj) {
-		//Toast.makeText(context, "outside tuch", 1).show();
-	}
+	
+	
 }

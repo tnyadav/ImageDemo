@@ -63,7 +63,7 @@ package com.pic.moment;
 
 import java.lang.reflect.Method;
 
-
+import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
@@ -168,12 +168,13 @@ boolean b;
 
 	/** Current drag mode */
 	private int mMode = MODE_NOTHING;
-
+	Context context;
 	// ----------------------------------------------------------------------------------------------------------------------
 
 	/** Constructor that sets handleSingleTouchEvents to true */
-	public MultiTouchController(MultiTouchObjectCanvas<T> objectCanvas) {
+	public MultiTouchController(MultiTouchObjectCanvas<T> objectCanvas,Context context) {
 		this(objectCanvas, true);
+		this.context=context;
 	}
 
 	/** Full constructor */
@@ -256,7 +257,9 @@ boolean b;
 		try {
 			int pointerCount = multiTouchSupported ? (Integer) m_getPointerCount.invoke(event) : 1;
 			if (DEBUG)
-				Log.i("MultiTouch", "Got here 1 - " + multiTouchSupported + " " + mMode + " " + handleSingleTouchEvents + " " + pointerCount);
+				//Log.i("MultiTouch", "Got here 1 - " + multiTouchSupported + " " + mMode + " " + handleSingleTouchEvents + " " + pointerCount);
+			Toast.makeText(context, "", 1).show();
+			
 			if (mMode == MODE_NOTHING && !handleSingleTouchEvents && pointerCount == 1)
 				// Not handling initial single touch events, just pass them on
 				
@@ -267,6 +270,7 @@ boolean b;
 			// Handle history first (we sometimes get history with ACTION_MOVE events)
 			int action = event.getAction();
 			int histLen = event.getHistorySize() / pointerCount;
+			//                                                                                                         Toast.makeText(context, ""+histLen, 1).show();
 			for (int histIdx = 0; histIdx <= histLen; histIdx++) {
 				// Read from history entries until histIdx == histLen, then read from current event
 				boolean processingHist = histIdx < histLen;
@@ -410,8 +414,6 @@ boolean b;
 					// Don't need any settling time if just placing one finger, there is no noise
 					mSettleStartTime = mSettleEndTime = mCurrPt.getEventTime();
 					
-				}else {
-					
 				}
 			}
 			break;
@@ -422,8 +424,10 @@ boolean b;
 			// Currently in a single-point drag
 			if (!mCurrPt.isDown()) {
 				
-				if (System.currentTimeMillis()-touchTime<200) {
-					objectCanvas.bounce(selectedObject);
+				if (System.currentTimeMillis()-touchTime<400) {
+					//Toast.makeText(context, "1", 1).show();
+					
+					((Img) selectedObject).bounce();
 				}
 				
 				// First finger was released, stop dragging
@@ -501,9 +505,7 @@ boolean b;
 			Log.i("MultiTouch", "Got here 7 - " + mMode + " " + mCurrPt.getNumTouchPoints() + " " + mCurrPt.isDown() + mCurrPt.isMultiTouch());
 	}
 
-   
-
-	public int getMode() {
+    public int getMode() {
         return mMode;
     }
 
@@ -856,7 +858,6 @@ boolean b;
 		 *            The current touch point.
 		 */
 		public void selectObject(T obj, PointInfo touchPoint);
-		public void bounce(T obj);
-		public void touchOutSide(T obj);
+		public void select(T obj);
 	}
 }

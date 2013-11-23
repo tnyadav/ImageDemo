@@ -1,23 +1,14 @@
 package com.pic.moment;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
 import android.os.Build;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
-import android.widget.Button;
 import android.widget.PopupWindow;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 
 
 
