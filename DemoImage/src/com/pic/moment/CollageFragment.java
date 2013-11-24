@@ -16,13 +16,16 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -41,7 +44,7 @@ import android.widget.Toast;
 public class CollageFragment extends BaseFragment{
 private View homeFragmentView;
 private PhotoSortrView photoSorter;
-private Button collageBack,collageDelete,collageFrame,collageAdd,collageShare,frameBotton;
+private Button collageBack,collageDelete;
 private final int RESULT_LOAD_IMAGE = 001;
 private final int CAPTURE_IMAGE = 002;
 private FrameLayout frameLayout;
@@ -71,13 +74,14 @@ collageBack.setOnClickListener(new OnClickListener() {
 	
 	@Override
 	public void onClick(View arg0) {
+		
 		LayoutInflater layoutInflater=picmomentActivity.getLayoutInflater();;
 		View	navigationViewContainer = layoutInflater.inflate(
 					R.layout.dialogback, null);
 		CustomMenu.show(picmomentActivity,navigationViewContainer);
 		
 		
-	/*	
+	
 		final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme_back);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setCanceledOnTouchOutside(true);
@@ -98,6 +102,8 @@ collageBack.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
+				picmomentActivity.popFragments();
+				/*
 			
                 
 				photoSorter.setDrawingCacheEnabled(true);
@@ -122,7 +128,7 @@ collageBack.setOnClickListener(new OnClickListener() {
 			            
 			        String time=""+System.currentTimeMillis();    
 
-					b.compress(CompressFormat.JPEG, 95, new FileOutputStream(temPath+"/"+time+".jpeg"));
+					b.compress(CompressFormat.JPEG, 100, new FileOutputStream(temPath+"/"+time+".jpeg"));
 					Toast.makeText(picmomentActivity, "saved in "+temPath+"/"+time+".jpeg", 1).show();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -134,7 +140,7 @@ collageBack.setOnClickListener(new OnClickListener() {
 			dialog.dismiss();
 			picmomentActivity.popFragments();
 				
-			}
+			*/}
 		});
 	    if (!isPresent) {
 	    	save.setEnabled(false);
@@ -159,309 +165,45 @@ collageBack.setOnClickListener(new OnClickListener() {
 			}
 		});
 	  
-		dialog.show();*/
+		dialog.show();
 	}
 });
 collageDelete = (Button)homeFragmentView.findViewById(R.id.collageDelete);
 collageDelete.setClickable(false);
-collageFrame = (Button)homeFragmentView.findViewById(R.id.collageFrame);
-collageFrame.setOnClickListener(new OnClickListener() {
-	
-	@Override
-	public void onClick(View arg0) {
-		
-		View	navigationViewContainer = PopupProvider.getFrame(picmomentActivity, new frame() {
-			
-			@Override
-			public void frameClicked(int index) {
-				Toast.makeText(picmomentActivity, ""+index, 1).show();
-			}
-		});
-		CustomMenu.show(picmomentActivity,navigationViewContainer);
-		
-	}
-});
-
-collageAdd = (Button)homeFragmentView.findViewById(R.id.collageAdd);
-collageAdd.setOnClickListener(new OnClickListener() {
-	
-	@Override
-	public void onClick(View arg0) {
-		
-		
-	/*	LayoutInflater layoutInflater=picmomentActivity.getLayoutInflater();;
-		View	navigationViewContainer = layoutInflater.inflate(
-					R.layout.dialogback, null);
-		CustomMenu.show(picmomentActivity,navigationViewContainer);*/
-		
-		
-		
-		
-		// custom dialog
-		final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme);
-		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		dialog.setCanceledOnTouchOutside(true);
-		Window window = dialog.getWindow();
-		WindowManager.LayoutParams wlp = window.getAttributes();
-		wlp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
-		wlp.height=LayoutParams.WRAP_CONTENT;
-		wlp.width=LayoutParams.WRAP_CONTENT;
-		//wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-		window.setAttributes(wlp);
-		//window.clearFlags(LayoutParams.FLAG_DIM_BEHIND);
-		dialog.setCancelable(true);
-		dialog.setContentView(R.layout.dialog);
-	    Button dialogUseCamera = (Button)dialog.findViewById(R.id.dialogUseCamera);
-	    dialogUseCamera.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-			
-				takePicture();
-				dialog.dismiss();
-				
-			}
-		});
-	    Button dialogAddPhoto = (Button)dialog.findViewById(R.id.dialogAddPhoto);
-	    dialogAddPhoto.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-						Intent i = new Intent(
-								Intent.ACTION_PICK,
-								android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-						startActivityForResult(i, RESULT_LOAD_IMAGE);
-						dialog.dismiss();
-			}
-		});
-	    Button dialogAddText = (Button)dialog.findViewById(R.id.dialogAddText);
-	    dialogAddText.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-				
-			}
-		});
-	    Button dialogAddSticker = (Button)dialog.findViewById(R.id.dialogAddSticker);
-	    dialogAddSticker.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				View	navigationViewContainer = PopupProvider.getEmocione(picmomentActivity, new frame() {
-					
-					@Override
-					public void frameClicked(int index) {
-						Toast.makeText(picmomentActivity, ""+index, 1).show();
-					}
-				});
-				CustomMenu.show(picmomentActivity,navigationViewContainer);
-			}
-		});
-		dialog.show();
-		
-		}
-});
-collageShare = (Button)homeFragmentView.findViewById(R.id.collageShare);
-collageShare.setOnClickListener(new OnClickListener() {
-	
-	@Override
-	public void onClick(View arg0) {}
-});
-
-/*frameBotton=(Button)homeFragmentView.findViewById(R.id.collageFrame);
-frameBotton.setOnClickListener(new OnClickListener() {
-	
-	@Override
-	public void onClick(View arg0) {
-		
-	}
-});
-*/
 
 frameLayout=(FrameLayout)homeFragmentView.findViewById(R.id.mainFrameContainer);
 photoSorter = new PhotoSortrView(picmomentActivity);
-int []rectf=new int[2];
+/*int []rectf=new int[2];
 collageFrame.getLocationOnScreen(rectf);
 
-photoSorter.setRectf(rectf);
-photoSorter.setDelete(collageDelete);/*
-photoSorter.setOnTouchListener(new OnTouchListener() {
-	
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		 switch (event.getAction()) {
-		    case MotionEvent.ACTION_DOWN:
-				if (dialog!=null) 
-					dialog.dismiss();
-		   
-		      break;
-		    case MotionEvent.ACTION_UP:
-		    	Img i=photoSorter.mImages.get(0);
-				if (i.getMinX() <= event.getX()&&event.getX()<=i.getMaxX()&&i.getMinY() <= event.getY()&&event.getY()<=i.getMaxY()) {
-					
-				}else {
-		
-						dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme_back);
-						dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-						dialog.setCanceledOnTouchOutside(true);
-						Window window = dialog.getWindow();
-						WindowManager.LayoutParams wlp = window.getAttributes();
-						//wlp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
-						wlp.height=LayoutParams.WRAP_CONTENT;
-						wlp.width=LayoutParams.WRAP_CONTENT;
-						wlp.x=(int) event.getX()-300;
-						wlp.y=(int) event.getY()-300;
-						//wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-						window.setAttributes(wlp);
-						//window.clearFlags(LayoutParams.FLAG_DIM_BEHIND);
-						dialog.setCancelable(true);
-						dialog.setContentView(R.layout.dialogback);
-					    Button save = (Button)dialog.findViewById(R.id.save);
-					    save.setOnClickListener(new OnClickListener() {
-							
-							@Override
-							public void onClick(View v) {
-							
-				                
-								photoSorter.setDrawingCacheEnabled(true);
-								Bitmap b = Bitmap.createBitmap(photoSorter.getWidth(),
-										photoSorter.getHeight(), Bitmap.Config.ARGB_8888);
-								 Canvas canvas = new Canvas(b);
-						         Drawable bgDrawable = photoSorter.getBackground();
-						         if (bgDrawable != null)
-						             bgDrawable.draw(canvas);
-						         else
-						             canvas.drawColor(Color.WHITE); 
-						         photoSorter.draw(canvas);
+photoSorter.setRectf(rectf);*/
+photoSorter.setDelete(collageDelete);
 
-							//	Toast.makeText(getApplicationContext(), saveToInternalSorage(b), 1).show();
-								//photoSorter.unloadImages();
-								try {
-									File file = new File(temPath);
-							            if (!file.exists())
-							            {
-							            	file.mkdirs();
-							            }
-							            
-							        String time=""+System.currentTimeMillis();    
+if (picmomentActivity.mImages.size()!=0) {
+photoSorter.mImages=picmomentActivity.mImages;
 
-									b.compress(CompressFormat.JPEG, 95, new FileOutputStream(temPath+"/"+time+".jpeg"));
-									Toast.makeText(picmomentActivity, "saved in "+temPath+"/"+time+".jpeg", 1).show();
-								} catch (Exception e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-									Log.e("t", e.toString());
-									Toast.makeText(picmomentActivity, "faild", 1).show();
-								}
-								
-							dialog.dismiss();
-							picmomentActivity.popFragments();
-								
-							}
-						});
-					    if (!isPresent) {
-					    	save.setEnabled(false);
-						}
-					    Button back = (Button)dialog.findViewById(R.id.back);
-					    back.setOnClickListener(new OnClickListener() {
-							
-							@Override
-							public void onClick(View v) {
-								dialog.cancel();
-								picmomentActivity.popFragments();
-									
-							}
-						});
-					    Button cancel = (Button)dialog.findViewById(R.id.cancel);
-					    cancel.setOnClickListener(new OnClickListener() {
-							
-							@Override
-							public void onClick(View v) {
-								
-								dialog.cancel();
-							}
-						});
-					  
-						dialog.show();
-					
-					
-					
-				}
-		      break;
-		 }
-		
-		return false;
-	}
-});*/
-frameLayout.addView(photoSorter);
+collageDelete.setVisibility(View.VISIBLE);
+}else {
+
 collageDelete.setVisibility(View.GONE);
-collageFrame.setVisibility(View.GONE);
-collageShare.setVisibility(View.GONE);
+
+}
+showBottomBar();
+frameLayout.addView(photoSorter);
 
 
 
-//frameLayout.addView(photoSorter);
 }
 
 	@Override
-	public void onPause() {
-		
-		super.onPause();
-	}
-
-	@Override
-	public void onResume() {
-		
-		super.onResume();
-	}
-
-	@Override
-	public void onStart() {
-		
-		super.onStart();
-	}
-
-	@Override
-	public void onStop() {
-		
-		super.onStop();
-	}
-	
-	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-         
+        
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
+        	
             Uri selectedImage = data.getData();
             new LoadImagesFromSDCard().execute(selectedImage);
             
-          /*  String[] filePathColumn = { MediaStore.Images.Media.DATA };
-       	 
-            Cursor cursor = picmomentActivity.getContentResolver().query(selectedImage,
-                    filePathColumn, null, null, null);
-            cursor.moveToFirst();
- 
-             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-             String picturePath = cursor.getString(columnIndex);
-             
-             cursor.close();
-             
-             if (photoSorter==null) {
-             	
-                 
-                 
-                 photoSorter.loadImages(picmomentActivity,new BitmapDrawable(getResources(),addWhiteBorder(BitmapFactory.decodeFile(picturePath), 10)));
- 			}else {
- 				photoSorter.loadImages(picmomentActivity,new BitmapDrawable(getResources(),addWhiteBorder(BitmapFactory.decodeFile(picturePath), 10)));
- 			}
-             if (collageDelete.getVisibility()==View.GONE && collageFrame.getVisibility() ==View.GONE && collageFrame.getVisibility() == View.GONE) {
-             	collageDelete.setVisibility(View.VISIBLE);
-                 collageFrame.setVisibility(View.VISIBLE);
-                 collageShare.setVisibility(View.VISIBLE);	
- 			}*/
-             
          }
         if(requestCode==CAPTURE_IMAGE && resultCode==Activity.RESULT_OK )
         {
@@ -529,12 +271,8 @@ collageShare.setVisibility(View.GONE);
 
          // Call after onPreExecute method
          protected String doInBackground(Uri... urls) {
-              
-        	 String picturePath = null ;
-                  
-                  
+            String picturePath = null ;
                  try {
-                      
                 	 String[] filePathColumn = { MediaStore.Images.Media.DATA };
                 	 
                      Cursor cursor = picmomentActivity.getContentResolver().query(urls[0],
@@ -577,22 +315,213 @@ collageShare.setVisibility(View.GONE);
              // Close progress dialog
                Dialog.dismiss();
                if (photoSorter==null) {
-                	
-                   
-                    
-                    photoSorter.loadImages(picmomentActivity,new BitmapDrawable(getResources(),addWhiteBorder(BitmapFactory.decodeFile(picturePath), 10)));
+                   photoSorter.loadImages(picmomentActivity,new BitmapDrawable(getResources(),addWhiteBorder(BitmapFactory.decodeFile(picturePath), 10)));
     			}else {
     				photoSorter.loadImages(picmomentActivity,new BitmapDrawable(getResources(),addWhiteBorder(BitmapFactory.decodeFile(picturePath), 10)));
     			}
-                if (collageDelete.getVisibility()==View.GONE && collageFrame.getVisibility() ==View.GONE && collageFrame.getVisibility() == View.GONE) {
-                	collageDelete.setVisibility(View.VISIBLE);
-                    collageFrame.setVisibility(View.VISIBLE);
-                    collageShare.setVisibility(View.VISIBLE);	
-    			}
+              
                 isPresent=true;
               
+             
+              
+                showBottomBar();
+               
+               
          }
           
      }  
-	
+
+		@Override
+		public void onPause() {
+			
+			super.onPause();
+			picmomentActivity.mImages=photoSorter.mImages;
+		}
+
+		@Override
+		public void onResume() {
+			
+			super.onResume();
+			
+		}
+
+		@Override
+		public void onStart() {
+			
+			super.onStart();
+		}
+
+		@Override
+		public void onStop() {
+			
+			super.onStop();
+		}
+		public void showBottomBar() { 
+			
+			 View view = picmomentActivity.layoutInflater.inflate(
+ 					R.layout.bottom_bar_frame, null);
+ 		
+ 		Button collageFrame = (Button)view.findViewById(R.id.collageFrame);
+ 		collageFrame.setOnClickListener(new OnClickListener() {
+ 			
+ 			@Override
+ 			public void onClick(View arg0) {
+ 				CustomMenu.hide();
+ 				View	navigationViewContainer =PopupProvider.getFrame(picmomentActivity, new frame() {
+ 					
+ 					@Override
+ 					public void frameClicked(int index) {
+ 						Toast.makeText(picmomentActivity, ""+index, 1).show();
+ 					}
+ 				},onClickListener);
+ 				CustomMenu.show(picmomentActivity,navigationViewContainer);
+ 				
+ 			}
+ 		});
+ 		Button collageAdd = (Button)view.findViewById(R.id.collageAdd);
+ 		collageAdd.setOnClickListener(new OnClickListener() {
+ 			
+ 			@Override
+ 			public void onClick(View arg0) {
+ 				
+ 				addImage();
+ 				
+ 				}
+ 		});	
+ 		Button collageShButton = (Button)view.findViewById(R.id.collageShare);
+ 		collageShButton.setOnClickListener(new OnClickListener() {
+ 			
+ 			@Override
+ 			public void onClick(View arg0) {
+ 				photoSorter.saveclicked=true;
+ 				photoSorter.setDrawingCacheEnabled(true);
+				Bitmap b = Bitmap.createBitmap(photoSorter.getWidth(),
+						photoSorter.getHeight(), Bitmap.Config.ARGB_8888);
+				Fragment shareFragment=new ShareFragment();
+				Bundle bundle=new Bundle();
+				bundle.putParcelable("image", getBitmapFromView(photoSorter));
+				shareFragment.setArguments(bundle);
+				picmomentActivity.pushFragments(shareFragment, true, true);
+ 			}
+ 		});
+ 		if (photoSorter.mImages.size()==0) {
+			collageFrame.setVisibility(View.GONE);
+			collageShButton.setVisibility(View.GONE);
+		}else {
+			  collageDelete.setVisibility(View.VISIBLE);
+		}
+       CustomMenu.show(picmomentActivity, view);
+		}
+		
+		
+		
+		private void addImage() {
+			// custom dialog
+			final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme);
+			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			dialog.setCanceledOnTouchOutside(true);
+			Window window = dialog.getWindow();
+			WindowManager.LayoutParams wlp = window.getAttributes();
+			wlp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
+			wlp.height=LayoutParams.WRAP_CONTENT;
+			wlp.width=LayoutParams.WRAP_CONTENT;
+			//wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+			window.setAttributes(wlp);
+			//window.clearFlags(LayoutParams.FLAG_DIM_BEHIND);
+			dialog.setCancelable(true);
+			dialog.setContentView(R.layout.dialog);
+		    Button dialogUseCamera = (Button)dialog.findViewById(R.id.dialogUseCamera);
+		    dialogUseCamera.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+				
+					takePicture();
+					dialog.dismiss();
+					CustomMenu.hide();
+					
+				}
+			});
+		    Button dialogAddPhoto = (Button)dialog.findViewById(R.id.dialogAddPhoto);
+		    dialogAddPhoto.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+							Intent i = new Intent(
+									Intent.ACTION_PICK,
+									android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+							startActivityForResult(i, RESULT_LOAD_IMAGE);
+							dialog.dismiss();
+							CustomMenu.hide();
+				}
+			});
+		    Button dialogAddText = (Button)dialog.findViewById(R.id.dialogAddText);
+		    dialogAddText.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					
+				}
+			});
+		    Button dialogAddSticker = (Button)dialog.findViewById(R.id.dialogAddSticker);
+		    dialogAddSticker.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					CustomMenu.hide();
+					View	navigationViewContainer = PopupProvider.getEmocione(picmomentActivity, new frame() {
+						
+						@Override
+						public void frameClicked(int index) {
+							if (index==9) {
+								CustomMenu.hide();
+								showBottomBar();
+							
+							}else {
+								Drawable drawable=getResources().getDrawable(PopupProvider.emocionsbig[index]);
+								  photoSorter.loadImages(picmomentActivity,drawable);
+								
+							}
+								
+								
+							
+							
+						}
+					});
+					CustomMenu.show(picmomentActivity,navigationViewContainer);
+				}
+			});
+			dialog.show();
+		}
+		private OnClickListener onClickListener= new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+			CustomMenu.hide();
+			showBottomBar();
+				
+			}
+		};
+		public static Bitmap getBitmapFromView(View view) {
+	        //Define a bitmap with the same size as the view
+			view.setDrawingCacheEnabled(true);
+	        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),Bitmap.Config.ARGB_8888);
+	        //Bind a canvas to it
+	        Canvas canvas = new Canvas(returnedBitmap);
+	        //Get the view's background
+	        Drawable bgDrawable =view.getBackground();
+	        if (bgDrawable!=null) 
+	            //has background drawable, then draw it on the canvas
+	            bgDrawable.draw(canvas);
+	        else 
+	            //does not have background drawable, then draw white background on the canvas
+	            canvas.drawColor(Color.TRANSPARENT);
+	        // draw the view on the canvas
+	        view.draw(canvas);
+	        //return the bitmap
+	        return returnedBitmap;
+	    }
 }

@@ -180,7 +180,7 @@ public class PhotoSortrView extends View implements
 		}
 		*/
 		
-		if (counter == 0) {
+		if (mImages.size() == 0) {
 			float spacing = mLinePaintTouchPointCircle.getFontSpacing();
 			float totHeight = spacing * infoLines.length;
 			for (int i = 0; i < infoLines.length; i++)
@@ -323,11 +323,11 @@ public class PhotoSortrView extends View implements
 		currTouchPoint.set(touchPoint);
 		if (img != null) {
 			// Move image to the top of the stack when selected
-			//bounceImage(img);
+			
 			mImages.remove(img);
 			mImages.add(img);
 			img.deleted = false;
-		//	bounceImage(img);
+	
 		} else {
 			// Called with img == null when drag stops.
 		}

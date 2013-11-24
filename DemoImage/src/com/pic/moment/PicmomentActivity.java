@@ -1,5 +1,6 @@
 package com.pic.moment;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 import android.app.AlertDialog;
@@ -10,12 +11,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.LayoutInflater;
 import android.view.WindowManager;
 
 public class PicmomentActivity extends FragmentActivity {
 
 	public Stack<Fragment> stack;
-
+	public LayoutInflater layoutInflater;
+	public ArrayList<Img> mImages = new ArrayList<Img>();
+	
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
@@ -26,6 +30,8 @@ public class PicmomentActivity extends FragmentActivity {
 		stack= new Stack<Fragment>();
 		  HomeFragment homeFragment = new HomeFragment();
 	      pushFragments(homeFragment, false, false);
+	      layoutInflater=getLayoutInflater();
+	     
 
 	}
 
@@ -38,6 +44,7 @@ public class PicmomentActivity extends FragmentActivity {
 
 	public void pushFragments(Fragment fragment, boolean shouldAnimate,
 			boolean shouldAdd) {
+		CustomMenu.hide();
 		if (shouldAdd)
 			stack.push(fragment);
 		FragmentManager manager = getSupportFragmentManager();
@@ -50,6 +57,7 @@ public class PicmomentActivity extends FragmentActivity {
 	}
 
 	public void popFragments() {
+		CustomMenu.hide();
 		Fragment fragment = stack.elementAt(stack.size() - 2);
 		stack.pop();
 		FragmentManager manager = getSupportFragmentManager();

@@ -44,7 +44,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_margin="5dp"
-        android:background="@drawable/collage_frame_button_background" />
+        android:background="@drawable/collage_frame_button_background"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/collageShare"
@@ -53,7 +54,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="5dp"
-        android:background="@drawable/collage_share_button_background" />
+        android:background="@drawable/collage_share_button_background"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/collageAdd"
@@ -62,6 +64,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_margin="5dp"
-        android:background="@drawable/collage_add_button_background" />
+        android:visibility="gone"
+        android:background="@drawable/collage_add_button_background"
+        />
 
 </RelativeLayout>

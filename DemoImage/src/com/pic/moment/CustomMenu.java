@@ -91,7 +91,7 @@ public class CustomMenu {
 		return;
 	}
 
-	public static synchronized void show(Activity context,View v) {
+	public static /*synchronized*/ void show(Activity context,View v) {
 
 		if (mMenu != null && CustomMenu.isShowing()) {
 

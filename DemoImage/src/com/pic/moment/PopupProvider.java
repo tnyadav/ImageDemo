@@ -1,13 +1,11 @@
 package com.pic.moment;
 
-import android.R.color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 public class PopupProvider {
 private static View view;
@@ -24,25 +22,25 @@ private static View view;
 			R.drawable.emoticon2_2_tn, R.drawable.emoticon2_3_tn,
 			R.drawable.emoticon2_4_tn, R.drawable.emoticon2_5_tn,
 			R.drawable.emoticon2_6_tn, R.drawable.emoticon2_7_tn,
-			R.drawable.emoticon2_8_tn,R.drawable.emoticon2_9_tn};
+			R.drawable.emoticon2_8_tn,R.drawable.emoticon2_9_tn,R.drawable.emoticon2_10_tn};
+	public static int[] emocionsbig = { R.drawable.emoticon_b_2_1,
+		R.drawable.emoticon_b_2_2, R.drawable.emoticon_b_2_3,
+		R.drawable.emoticon_b_2_4, R.drawable.emoticon_b_2_5,
+		R.drawable.emoticon_b_2_6, R.drawable.emoticon_b_2_7,
+		R.drawable.emoticon_b_2_8,R.drawable.emoticon_b_2_9};
 
-	public static View getFrame(PicmomentActivity picmomentActivity,final frame frame) {
+	public static View getFrame(final PicmomentActivity picmomentActivity,final frame frame,final OnClickListener onClickListener) {
 		LayoutInflater layoutInflater=picmomentActivity.getLayoutInflater();;
 		view = layoutInflater.inflate(
 					R.layout.frame_popup, null);
 		Button button=(Button)view.findViewById(R.id.popupFrameButton);
-		button.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				CustomMenu.hide();
-			}
-		});
+		button.setOnClickListener(onClickListener);
 		LinearLayout popupFrameFrams=(LinearLayout)view.findViewById(R.id.popupFrameFrams);
 		for (int i = 0; i < framsREsource.length; i++) {
 			final int tempI=i; 
 			ImageView imageView=new ImageView(picmomentActivity);
 			imageView.setImageResource(framsREsource[i]);
+			imageView.setPadding(25, 0, 25, 0);
 			imageView.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -64,17 +62,12 @@ private static View view;
 					R.layout.frame_emoticion_popup, null);
 		
 		LinearLayout popupFrameFrams=(LinearLayout)view.findViewById(R.id.popupFrameFrams);
-		for (int i = 0; i < emocions.length+1; i++) {
+		for (int i = 0; i < emocions.length; i++) {
 			final int tempI=i; 
 			ImageView imageView=new ImageView(picmomentActivity);
-			if (tempI==9) {
-				TextView close=new TextView(picmomentActivity);
-				close.setText("Close");
-				close.setBackgroundColor(color.transparent);
-				close.setTextColor(color.transparent);
-				popupFrameFrams.addView(close);
-			} else {
-				((ImageView) imageView).setImageResource(emocions[i]);
+			
+				imageView.setImageResource(emocions[i]);
+				imageView.setPadding(25, 0, 25, 25);
 				imageView.setOnClickListener(new OnClickListener() {
 					
 					@Override
@@ -86,7 +79,7 @@ private static View view;
 			}
 			
 			
-		}
+		
 		
 		
 		return view;
