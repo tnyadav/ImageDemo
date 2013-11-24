@@ -59,7 +59,7 @@ public class PhotoSortrView extends View implements
 			"characteristics" };
 
 	ArrayList<Img> mImages = new ArrayList<Img>();
-	private static int counter = 0;
+	//private static int counter = 0;
 	public static boolean saveclicked = false;
 	private Context context;
 	private boolean touch_disabled=false;
@@ -147,16 +147,15 @@ public class PhotoSortrView extends View implements
 	}
 
 	/** Called by activity's onResume() method to load the images */
-	public void loadImages(Context context, Drawable IMAGES) {
+	public void loadImages(Context context, Drawable []IMAGES) {
 		Resources res = context.getResources();
-		// for (int i = 0; i < IMAGES.length; i++)
-		mImages.add(new Img(IMAGES, res));
-		mImages.get(counter).load(res);
-		counter = counter + 1;
-		/*
-		 * int n = mImages.size(); for (int i = 0; i < n; i++)
-		 * mImages.get(i).load(res);
-		 */
+		 for (int i = 0; i < IMAGES.length; i++)
+		 {
+			 Img img = new Img(IMAGES[i], res);
+		     mImages.add(img);
+		     img.load(res);
+		 }
+	
 	}
 
 	/**
@@ -189,8 +188,8 @@ public class PhotoSortrView extends View implements
 
 		} else {
 			if (saveclicked) {
-				int n = mImages.size();
-				for (int i = 0; i < n; i++)
+				
+				for (int i = 0; i <  mImages.size(); i++)
 					if (mImages.get(i).deleted) {
 
 					} else {
@@ -198,8 +197,8 @@ public class PhotoSortrView extends View implements
 					}
 
 			} else {
-				int n = mImages.size();
-				for (int i = 0; i < n; i++)
+			
+				for (int i = 0; i <  mImages.size(); i++)
 				
 						mImages.get(i).draw(canvas);
 				

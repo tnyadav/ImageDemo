@@ -2,8 +2,10 @@ package com.pic.moment;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 
 import com.pic.moment.PopupProvider.frame;
+import com.pic.moment.multipleselection.MultiPhotoSelectActivity;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -201,14 +203,21 @@ frameLayout.addView(photoSorter);
         
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
         	
-            Uri selectedImage = data.getData();
-            new LoadImagesFromSDCard().execute(selectedImage);
+          // ArrayList<String> selectedItems = data.getParcelableExtra("selectedItems");
+           String[] selectedItems = data.getStringArrayExtra("selectedItems");
+            new LoadImagesFromSDCard().execute(selectedItems);
             
          }
         if(requestCode==CAPTURE_IMAGE && resultCode==Activity.RESULT_OK )
         {
-        	//Uri selectedImage = data.getData();
-        	new LoadImagesFromSDCard().execute(imageUri);
+        	
+
+             String[] filePathColumn = {MediaStore.Images.Media.DATA};
+             Cursor cursor = picmomentActivity.getContentResolver().query(imageUri, filePathColumn, null, null, null);
+             cursor.moveToFirst();
+             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+             String filePath = cursor.getString(columnIndex);
+        	new LoadImagesFromSDCard().execute(new String[]{filePath});
         }
 	}
         private Bitmap addWhiteBorder(Bitmap bmp, int borderSize) {
@@ -253,84 +262,32 @@ frameLayout.addView(photoSorter);
  		  }
         
 
-	 public class LoadImagesFromSDCard  extends AsyncTask<Uri, Void, String> {
+	 public class LoadImagesFromSDCard  extends AsyncTask<String, Void, Drawable[]> {
          
          private ProgressDialog Dialog = new ProgressDialog(picmomentActivity);
-          
-        // Bitmap mBitmap;
-        
-          
          protected void onPreExecute() {
-             /****** NOTE: You can call UI Element here. *****/
+            Dialog.setMessage(" Loading image from Sdcard..");
+            Dialog.show();
+         }
+     protected Drawable[] doInBackground(String...urls) {
+           
+            Drawable []drawable=new Drawable[urls.length];
+            for (int i = 0; i < drawable.length; i++) {
+				Drawable drawable2=new BitmapDrawable(getResources(),addWhiteBorder(BitmapFactory.decodeFile(urls[i]), 10));
+				drawable[i]=drawable2; 
+            }
               
-             // Progress Dialog
-             Dialog.setMessage(" Loading image from Sdcard..");
-             Dialog.show();
+             return drawable;
          }
 
+		protected void onPostExecute(Drawable[] drawable) {
+			Dialog.dismiss();
+			photoSorter.loadImages(picmomentActivity, drawable);
+			isPresent = true;
+			showBottomBar();
 
-         // Call after onPreExecute method
-         protected String doInBackground(Uri... urls) {
-            String picturePath = null ;
-                 try {
-                	 String[] filePathColumn = { MediaStore.Images.Media.DATA };
-                	 
-                     Cursor cursor = picmomentActivity.getContentResolver().query(urls[0],
-                             filePathColumn, null, null, null);
-                     cursor.moveToFirst();
-          
-                      int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                      picturePath = cursor.getString(columnIndex);
-                      cursor.close();
-                    
-                      
-                    /* if (bitmap != null) {
-                          
-                         *//********* Creates a new bitmap, scaled from an existing bitmap. ***********//*
-
-                         newBitmap = Bitmap.createScaledBitmap(bitmap, 170, 170, true);
-                          
-                         bitmap.recycle();
-                          
-                         if (newBitmap != null) {
-                              
-                             mBitmap = newBitmap;
-                         }
-                     }*/
-                 } catch (Exception e) {
-                     // Error fetching image, try to recover
-                      e.printStackTrace();
-                     /********* Cancel execution of this task. **********/
-                     cancel(true);
-                 }
-              
-             return picturePath;
-         }
-          
-          
-         protected void onPostExecute(String picturePath) {
-              
-             // NOTE: You can call UI Element here.
-                                                                                           
-             // Close progress dialog
-               Dialog.dismiss();
-               if (photoSorter==null) {
-                   photoSorter.loadImages(picmomentActivity,new BitmapDrawable(getResources(),addWhiteBorder(BitmapFactory.decodeFile(picturePath), 10)));
-    			}else {
-    				photoSorter.loadImages(picmomentActivity,new BitmapDrawable(getResources(),addWhiteBorder(BitmapFactory.decodeFile(picturePath), 10)));
-    			}
-              
-                isPresent=true;
-              
-             
-              
-                showBottomBar();
-               
-               
-         }
-          
-     }  
-
+		}  
+	 }
 		@Override
 		public void onPause() {
 			
@@ -448,9 +405,10 @@ frameLayout.addView(photoSorter);
 				@Override
 				public void onClick(View v) {
 					
-							Intent i = new Intent(
+						/*	Intent i = new Intent(
 									Intent.ACTION_PICK,
-									android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+									android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);*/
+					Intent i = new Intent(picmomentActivity,MultiPhotoSelectActivity.class);
 							startActivityForResult(i, RESULT_LOAD_IMAGE);
 							dialog.dismiss();
 							CustomMenu.hide();
@@ -482,7 +440,7 @@ frameLayout.addView(photoSorter);
 							
 							}else {
 								Drawable drawable=getResources().getDrawable(PopupProvider.emocionsbig[index]);
-								  photoSorter.loadImages(picmomentActivity,drawable);
+								  photoSorter.loadImages(picmomentActivity,new Drawable[] {drawable});
 								
 							}
 								
@@ -491,6 +449,7 @@ frameLayout.addView(photoSorter);
 							
 						}
 					});
+					dialog.dismiss();
 					CustomMenu.show(picmomentActivity,navigationViewContainer);
 				}
 			});
@@ -505,7 +464,7 @@ frameLayout.addView(photoSorter);
 				
 			}
 		};
-		public static Bitmap getBitmapFromView(View view) {
+		public Bitmap getBitmapFromView(View view) {
 	        //Define a bitmap with the same size as the view
 			view.setDrawingCacheEnabled(true);
 	        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),Bitmap.Config.ARGB_8888);
