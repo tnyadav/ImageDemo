@@ -4,5 +4,6 @@
     <string name="app_name">PicMoment</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <color name="image_background">#EAEAEA</color>
 
 </resources>

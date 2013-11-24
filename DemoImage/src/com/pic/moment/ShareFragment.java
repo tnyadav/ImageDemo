@@ -1,9 +1,14 @@
 package com.pic.moment;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,12 +21,7 @@ public class ShareFragment extends BaseFragment{
 private View shareFragment;
 ImageView imageView;
 private Bitmap bitmap;
-public Bitmap getBitmap() {
-	return bitmap;
-}
-public void setBitmap(Bitmap bitmap) {
-	this.bitmap = bitmap;
-}
+
 private Button shareBack,shareFacebookButton,shareTwitterButton,shareTumbirButton,shareLibraryButton,shareEmailButton,shareFlikerButton;
 
 Uri imageUri= null;
@@ -41,7 +41,6 @@ private String temPath= Environment.getExternalStorageDirectory()+"/PicMomentsTe
 private void SetContent() {
 	imageView=(ImageView)shareFragment.findViewById(R.id.shareImage);
 	bitmap=(Bitmap)(getArguments().getParcelable("image"));
-	Toast.makeText(picmomentActivity, bitmap.getWidth()+" "+bitmap.getHeight(), 1).show();
 	imageView.setImageBitmap(bitmap);
 	shareBack=(Button)shareFragment.findViewById(R.id.shareBack);
 	shareBack.setOnClickListener(new OnClickListener() {
@@ -83,6 +82,23 @@ private void SetContent() {
 		
 		@Override
 		public void onClick(View arg0) {
+			try {
+				File file = new File(temPath);
+		            if (!file.exists())
+		            {
+		            	file.mkdirs();
+		            }
+		            
+		        String time=""+System.currentTimeMillis();    
+
+				bitmap.compress(CompressFormat.JPEG, 100, new FileOutputStream(temPath+"/"+time+".jpeg"));
+				Toast.makeText(picmomentActivity, "saved in "+temPath+"/"+time+".jpeg", 1).show();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				Log.e("t", e.toString());
+				Toast.makeText(picmomentActivity, "faild to save", 1).show();
+			}
 			
 		}
 	});

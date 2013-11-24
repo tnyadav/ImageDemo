@@ -477,7 +477,7 @@ frameLayout.addView(photoSorter);
 	            bgDrawable.draw(canvas);
 	        else 
 	            //does not have background drawable, then draw white background on the canvas
-	            canvas.drawColor(Color.TRANSPARENT);
+	            canvas.drawColor(getResources().getColor(R.color.image_background));
 	        // draw the view on the canvas
 	        view.draw(canvas);
 	        //return the bitmap
