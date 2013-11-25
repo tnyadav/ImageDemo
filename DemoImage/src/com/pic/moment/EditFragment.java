@@ -1,5 +1,7 @@
 package com.pic.moment;
 
+import com.pic.moment.PopupProvider.frame;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -25,16 +27,17 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
 public class EditFragment extends BaseFragment{
 private View homeFragmentView;
-private Button collageBack,collageDelete,collageAdd,collageShare;
+private Button collageBack,collageDelete,editAdd,collageShare;
 private final int RESULT_LOAD_IMAGE = 001;
 private final int CAPTURE_IMAGE = 002;
 private ImageView imageView;
 Uri imageUri= null;
-boolean isPresent=false;
+LinearLayout linearLayout;
 private String temPath= Environment.getExternalStorageDirectory()+"/PicMomentsTemp";
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,116 +51,18 @@ private String temPath= Environment.getExternalStorageDirectory()+"/PicMomentsTe
 		
 	}
 private void SetContent() {
-collageBack = (Button)homeFragmentView.findViewById(R.id.collageBack);
-collageBack.setOnClickListener(new OnClickListener() {
+linearLayout=(LinearLayout)homeFragmentView.findViewById(R.id.editDataContainer);
+linearLayout.setVisibility(View.GONE);
+linearLayout.addView(PopupProvider.getBlands(picmomentActivity, new frame() {
 	
 	@Override
-	public void onClick(View arg0) {
-		
-		final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme_back);
-		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		dialog.setCanceledOnTouchOutside(true);
-		Window window = dialog.getWindow();
-		WindowManager.LayoutParams wlp = window.getAttributes();
-		wlp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
-		wlp.height=LayoutParams.WRAP_CONTENT;
-		wlp.width=LayoutParams.WRAP_CONTENT;
-		/*wlp.x=50;
-		wlp.y=150;*/
-		//wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-		window.setAttributes(wlp);
-		//window.clearFlags(LayoutParams.FLAG_DIM_BEHIND);
-		dialog.setCancelable(true);
-		dialog.setContentView(R.layout.dialogback);
-	    Button save = (Button)dialog.findViewById(R.id.save);
-	    save.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {/*
-			
-                
-				photoSorter.setDrawingCacheEnabled(true);
-				Bitmap b = Bitmap.createBitmap(photoSorter.getWidth(),
-						photoSorter.getHeight(), Bitmap.Config.ARGB_8888);
-				 Canvas canvas = new Canvas(b);
-		         Drawable bgDrawable = photoSorter.getBackground();
-		         if (bgDrawable != null)
-		             bgDrawable.draw(canvas);
-		         else
-		             canvas.drawColor(Color.WHITE); 
-		         photoSorter.draw(canvas);
-
-			//	Toast.makeText(getApplicationContext(), saveToInternalSorage(b), 1).show();
-				//photoSorter.unloadImages();
-				try {
-					File file = new File(temPath);
-			            if (!file.exists())
-			            {
-			            	file.mkdirs();
-			            }
-			            
-			        String time=""+System.currentTimeMillis();    
-
-					b.compress(CompressFormat.JPEG, 95, new FileOutputStream(temPath+"/"+time+".jpeg"));
-					Toast.makeText(picmomentActivity, "saved in "+temPath+"/"+time+".jpeg", 1).show();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					Log.e("t", e.toString());
-					Toast.makeText(picmomentActivity, "faild", 1).show();
-				}
-				
-			dialog.dismiss();
-			picmomentActivity.popFragments();
-				
-			*/}
-		});
-	    if (!isPresent) {
-	    	save.setEnabled(false);
-		}
-	    Button back = (Button)dialog.findViewById(R.id.back);
-	    back.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				dialog.cancel();
-				picmomentActivity.popFragments();
-					
-			}
-		});
-	    Button cancel = (Button)dialog.findViewById(R.id.cancel);
-	    cancel.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-				dialog.cancel();
-			}
-		});
-	  
-		dialog.show();
-	}
-});
-collageDelete = (Button)homeFragmentView.findViewById(R.id.collageDelete);
-collageDelete.setOnClickListener(new OnClickListener() {
-	
-	@Override
-	public void onClick(View arg0) {
-		
+	public void frameClicked(int index) {
+		// TODO Auto-generated method stub
 		
 	}
-});
-/*collageFrame = (Button)homeFragmentView.findViewById(R.id.collageFrame);
-collageFrame.setOnClickListener(new OnClickListener() {
-	
-	@Override
-	public void onClick(View arg0) {
-		
-		
-	}
-});*/
-collageAdd = (Button)homeFragmentView.findViewById(R.id.collageAdd);
-collageAdd.setOnClickListener(new OnClickListener() {
+}));
+editAdd = (Button)homeFragmentView.findViewById(R.id.editAdd);
+editAdd.setOnClickListener(new OnClickListener() {
 	
 	@Override
 	public void onClick(View arg0) {// custom dialog
@@ -220,20 +125,9 @@ collageAdd.setOnClickListener(new OnClickListener() {
 		
 		}
 });
-collageShare = (Button)homeFragmentView.findViewById(R.id.collageShare);
-collageShare.setOnClickListener(new OnClickListener() {
-	
-	@Override
-	public void onClick(View arg0) {}
-});
+
 imageView=(ImageView)homeFragmentView.findViewById(R.id.mainFrameContainer);
 
-collageDelete.setVisibility(View.GONE);
-collageShare.setVisibility(View.GONE);
-
-
-
-//frameLayout.addView(photoSorter);
 }
 
 	@Override
@@ -265,6 +159,7 @@ collageShare.setVisibility(View.GONE);
         super.onActivityResult(requestCode, resultCode, data);
          
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
+        	linearLayout.setVisibility(View.VISIBLE);
             Uri selectedImage = data.getData();
             new LoadImagesFromSDCard().execute(selectedImage);
             
@@ -273,6 +168,333 @@ collageShare.setVisibility(View.GONE);
          }
         if(requestCode==CAPTURE_IMAGE && resultCode==Activity.RESULT_OK )
         {
+        	linearLayout.setVisibility(View.VISIBLE);
+            
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
+        	
         	//Uri selectedImage = data.getData();
         	new LoadImagesFromSDCard().execute(imageUri);
         }
@@ -385,11 +607,7 @@ collageShare.setVisibility(View.GONE);
              // Close progress dialog
                Dialog.dismiss();
               imageView.setImageDrawable(new BitmapDrawable(getResources(),addWhiteBorder(BitmapFactory.decodeFile(picturePath), 10)));
-                if (collageDelete.getVisibility()==View.GONE && collageShare.getVisibility() ==View.GONE ) {
-                	collageDelete.setVisibility(View.VISIBLE);
-                    collageShare.setVisibility(View.VISIBLE);	
-    			}
-                isPresent=true;
+                
               
          }
           

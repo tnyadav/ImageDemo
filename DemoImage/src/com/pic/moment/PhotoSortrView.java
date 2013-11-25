@@ -54,9 +54,7 @@ public class PhotoSortrView extends View implements
 	// private static final int[] IMAGES = { R.drawable.m74hubble,
 	// R.drawable.catarina, R.drawable.tahiti, R.drawable.sunset,
 	// R.drawable.lake };
-	private static final String[] infoLines = { "Touch the screen",
-			"with one or more", "fingers to test", "multitouch",
-			"characteristics" };
+	private static final String[] infoLines = { "Tap anywhere to add an item"};
 
 	ArrayList<Img> mImages = new ArrayList<Img>();
 	//private static int counter = 0;

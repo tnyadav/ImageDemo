@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Toast;
@@ -191,7 +192,7 @@ d.setText("SHOW ME TEXTljkllll\nllllllll\nlllljhkh\njkhkj\nhkhkhllhjlgj\nlljll")
 d.setTextColor(Color.BLUE);*/
 /*ClipDrawable clip = new ClipDrawable(d, Gravity.LEFT, ClipDrawable.HORIZONTAL);*/
 
-photoSorter.loadImages(picmomentActivity, new Drawable[]{makeMarker("Tnyadav\nyadav\nqainfotech",50,Color.RED)});
+//photoSorter.loadImages(picmomentActivity, new Drawable[]{makeMarker("Tnyadav\nyadav\nqainfotech",50,Color.RED)});
 
 if (picmomentActivity.mImages.size()!=0) {
 photoSorter.mImages=picmomentActivity.mImages;
@@ -199,7 +200,7 @@ photoSorter.mImages=picmomentActivity.mImages;
 collageDelete.setVisibility(View.VISIBLE);
 }else {
 
-collageDelete.setVisibility(View.GONE);
+//collageDelete.setVisibility(View.GONE);
 
 }
 showBottomBar();
@@ -432,6 +433,44 @@ frameLayout.addView(photoSorter);
 				@Override
 				public void onClick(View v) {
 					
+					dialog.dismiss();
+					
+					
+					final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme_back);
+					dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					dialog.setCanceledOnTouchOutside(true);
+					Window window = dialog.getWindow();
+					WindowManager.LayoutParams wlp = window.getAttributes();
+					wlp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
+					wlp.height=LayoutParams.WRAP_CONTENT;
+					wlp.width=LayoutParams.WRAP_CONTENT;
+					/*wlp.x=50;
+					wlp.y=150;*/
+					wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+					window.setAttributes(wlp);
+					//window.clearFlags(LayoutParams.FLAG_DIM_BEHIND);
+					dialog.setCancelable(true);
+					dialog.setContentView(R.layout.add_text);
+					final EditText et=(EditText)dialog.findViewById(R.id.et);
+				    Button save = (Button)dialog.findViewById(R.id.done);
+				    save.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+						et.clearComposingText();
+						et.setFocusable(false);
+						
+						photoSorter.loadImages(picmomentActivity,
+								new Drawable[] { new BitmapDrawable(
+										picmomentActivity.getResources(),
+										getBitmapFromView(et)) });
+						CustomMenu.hide();
+						showBottomBar();
+					}
+				});
+				  
+					dialog.show();
 					
 				}
 			});
@@ -455,9 +494,6 @@ frameLayout.addView(photoSorter);
 								  photoSorter.loadImages(picmomentActivity,new Drawable[] {drawable});
 								
 							}
-								
-								
-							
 							
 						}
 					});
@@ -477,8 +513,11 @@ frameLayout.addView(photoSorter);
 			}
 		};
 		public Bitmap getBitmapFromView(View view) {
+			
 	        //Define a bitmap with the same size as the view
+			view.setBackgroundColor(Color.TRANSPARENT);
 			view.setDrawingCacheEnabled(true);
+			view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 	        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),Bitmap.Config.ARGB_8888);
 	        //Bind a canvas to it
 	        Canvas canvas = new Canvas(returnedBitmap);

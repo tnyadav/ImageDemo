@@ -84,6 +84,7 @@ public class Img {
 				/ (float) Math.max(width, height) * Math.random() * 0.3 + 0.2);
 		sx = sy = sc;
 		setPos(cx, cy, sx, sy, (float) (Math.random() * 0.5f + 0.0f));
+		//setPos(cx, cy, 1, 1, 0);
 	}
 
 	/**
