@@ -15,7 +15,7 @@ public class Img {
 
 	private Drawable drawable;
 	public Resources resources;
-	boolean deleted;
+	boolean deleted=false;
 	boolean bouncing=false;
 	private int width, height;
 
@@ -45,6 +45,8 @@ public class Img {
 
 	public Img(Drawable resId, Resources res) {
 		this.drawable = resId;
+		
+
 		this.resources = res;
 		this.deleted = false;
 		getMetrics(res);
@@ -75,8 +77,8 @@ public class Img {
 		
 		
 		float cx, cy, sx, sy;
-		cx = (float) /* (Math.random() * */(displayWidth) / 4;
-		cy = (float) /* (Math.random() * */(displayHeight) / 4;
+		cx = (float) /* (Math.random() * */(displayWidth) / 2;
+		cy = (float) /* (Math.random() * */(displayHeight) / 2;
 
 		float sc = (float) (Math.max(displayWidth, displayHeight)
 				/ (float) Math.max(width, height) * Math.random() * 0.3 + 0.2);

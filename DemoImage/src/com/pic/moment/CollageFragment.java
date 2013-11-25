@@ -1,12 +1,5 @@
 package com.pic.moment;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-
-import com.pic.moment.PopupProvider.frame;
-import com.pic.moment.multipleselection.MultiPhotoSelectActivity;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -14,27 +7,27 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.text.Layout;
+import android.util.Base64;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -42,6 +35,9 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Toast;
+
+import com.pic.moment.PopupProvider.frame;
+import com.pic.moment.multipleselection.MultiPhotoSelectActivity;
 
 public class CollageFragment extends BaseFragment{
 private View homeFragmentView;
@@ -80,6 +76,7 @@ collageBack.setOnClickListener(new OnClickListener() {
 		LayoutInflater layoutInflater=picmomentActivity.getLayoutInflater();;
 		View	navigationViewContainer = layoutInflater.inflate(
 					R.layout.dialogback, null);
+		
 		CustomMenu.show(picmomentActivity,navigationViewContainer);
 		
 		
@@ -175,11 +172,26 @@ collageDelete.setClickable(false);
 
 frameLayout=(FrameLayout)homeFragmentView.findViewById(R.id.mainFrameContainer);
 photoSorter = new PhotoSortrView(picmomentActivity);
-/*int []rectf=new int[2];
-collageFrame.getLocationOnScreen(rectf);
 
-photoSorter.setRectf(rectf);*/
 photoSorter.setDelete(collageDelete);
+/*TextDrawable d = new TextDrawable(picmomentActivity);
+d.setText("SHOW ME TEXTljkllll\nllllllll\nlllljhkh\njkhkj\nhkhkhllhjlgj\nlljll");
+d.setTextColor(Color.BLUE);
+d.setTextSize(10);
+d.setTextAlign(Layout.Alignment.ALIGN_CENTER);
+Bitmap bitmap = 
+BitmapFactory.decodeResource(resources, gResId);*/
+/*
+Toast.makeText(picmomentActivity, d.getMinimumHeight()+" "+d.getMinimumWidth(), 1).show();*/
+/*byte [] encodeByte=Base64.decode("tnyadav",Base64.DEFAULT);
+Bitmap bitmap=BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length); 
+Drawable d = new BitmapDrawable(bitmap);*/
+/*TextDrawable d = new TextDrawable(picmomentActivity);
+d.setText("SHOW ME TEXTljkllll\nllllllll\nlllljhkh\njkhkj\nhkhkhllhjlgj\nlljll");
+d.setTextColor(Color.BLUE);*/
+/*ClipDrawable clip = new ClipDrawable(d, Gravity.LEFT, ClipDrawable.HORIZONTAL);*/
+
+photoSorter.loadImages(picmomentActivity, new Drawable[]{makeMarker("Tnyadav\nyadav\nqainfotech",50,Color.RED)});
 
 if (picmomentActivity.mImages.size()!=0) {
 photoSorter.mImages=picmomentActivity.mImages;
@@ -483,4 +495,22 @@ frameLayout.addView(photoSorter);
 	        //return the bitmap
 	        return returnedBitmap;
 	    }
+		private Drawable makeMarker(String text, int textSize, int textColor){
+			Bitmap largeWhiteBitmap = Bitmap.createBitmap(textSize * text.length(), textSize*2 , Bitmap.Config.ARGB_8888);
+
+		    Canvas canvas = new Canvas(largeWhiteBitmap);
+
+		    canvas.drawColor(Color.BLACK);
+
+		    Paint paint = new Paint();
+
+		    paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+		    paint.setTextSize(textSize);
+		    paint.setColor(textColor);
+		    paint.setTextAlign(Paint.Align.CENTER);
+		    paint.setAntiAlias(true);
+		    canvas.drawText(text, 10, textSize, paint);
+		    Drawable drawable=new BitmapDrawable(picmomentActivity.getResources(), largeWhiteBitmap);
+		    return drawable;
+		}
 }

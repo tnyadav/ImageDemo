@@ -107,6 +107,7 @@ public class PhotoSortrView extends View implements
 		this.context = context;
 		 multiTouchController = new MultiTouchController<Img>(
 					this,context);
+		 saveclicked=false;
 
 	}
 
@@ -114,6 +115,7 @@ public class PhotoSortrView extends View implements
 		this(context, attrs, 0);
 		 multiTouchController = new MultiTouchController<Img>(
 					this, context);
+		 saveclicked=false;
 	}
 
 	public PhotoSortrView(Context context, AttributeSet attrs, int defStyle) {
@@ -251,10 +253,11 @@ public class PhotoSortrView extends View implements
 	}
 
 	SimpleOnGestureListener simpleOnGestureListener = new SimpleOnGestureListener()
-	{
+ {
 		private static final int SWIPE_MIN_DISTANCE = 50;
-		
+
 		private static final int SWIPE_THRESHOLD_VELOCITY = 500;
+		boolean b;
 
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
@@ -262,32 +265,36 @@ public class PhotoSortrView extends View implements
 
 			if (e1.getY() - e2.getY() > SWIPE_MIN_DISTANCE
 					&& Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
-			//	delete.setBackgroundResource(R.drawable.cl_deleteopen);
-				//final Img img = multiTouchController.selectedObject;
-				final Img img =getDraggableObjectAtPoint(currTouchPoint);
-	
-				img.deleted = true;
-				img.minX = img.displayWidth - 100;
-				img.maxX = img.displayWidth;
-				img.minY = 0;
-				img.maxY = 100;
-				
-				
-				
-			/*	cx = e1.getX();
-				cy= e1.getY();
-*/
-				new Handler().postDelayed(new Runnable() {
+				// delete.setBackgroundResource(R.drawable.cl_deleteopen);
+				// final Img img = multiTouchController.selectedObject;
+				final Img img = getDraggableObjectAtPoint(currTouchPoint);
+				if (img != null) {
+					// img.deleted = true;
+					img.minX = img.displayWidth - 100;
+					img.maxX = img.displayWidth;
+					img.minY = 0;
+					img.maxY = 100;
 
-					@Override
-					public void run() {
-						delete.setBackgroundResource(R.drawable.cl_deleteoff);
-						
-					}
-				}, 100);
-				return true;
+					/*
+					 * cx = e1.getX(); cy= e1.getY();
+					 */
+					new Handler().postDelayed(new Runnable() {
+
+						@Override
+						public void run() {
+							delete.setBackgroundResource(R.drawable.cl_deleteoff);
+
+						}
+					}, 100);
+					b = true;
+				} else {
+					b = false;
+				}
+
+			} else {
+				b = false;
 			}
-			return true;
+			return b;
 		}
 
 	};

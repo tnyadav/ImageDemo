@@ -1,12 +1,28 @@
 package com.pic.moment;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.text.Layout;
+
+
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class HomeFragment1 extends BaseFragment{
 private View homeFragmentView;
@@ -26,6 +42,10 @@ private View homeFragmentView;
 			}
 		});
         ImageView  CreateCollageButton = (ImageView) homeFragmentView.findViewById(R.id.createCollageButton);
+        
+        
+        
+       // CreateCollageButton.setImageDrawable(textAsBitmap("tnyadav", 50, Color.RED));
         CreateCollageButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -84,7 +104,42 @@ private View homeFragmentView;
 		
 		super.onStop();
 	}
-	
-	
+	private Drawable makeMarker(){
+		 Paint paint = new Paint();
+		 paint.setTextSize(10);
+         paint.setTextScaleX(1.f);
+         paint.setAlpha(0);
+         paint.setAntiAlias(true);
+		 paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC)); 
+		   
+		 
+         Bitmap b = Bitmap.createBitmap(200, 200, Bitmap.Config.ALPHA_8);
+         Canvas c = new Canvas(b);
+         c.drawColor(Color.GREEN);
+         c.drawRect(0, 0, 100, 100, paint);
+
+         
+         c.drawText("Your text", 30, 40, paint);
+         paint.setColor(Color.TRANSPARENT);
+
+         c.drawBitmap(b, 100,100, paint);
+         Drawable drawable=new BitmapDrawable(picmomentActivity.getResources(), b);
+         return drawable;
+	}
+	public Drawable textAsBitmap(String text, float textSize, int textColor) {
+	    Paint paint = new Paint();
+	    paint.setTextSize(textSize);
+	    paint.setColor(textColor);
+	    paint.setTextAlign(Paint.Align.CENTER);
+	    int width = (int) (paint.measureText(text) + 0.5f); // round
+	    float baseline = (int) (-paint.ascent() + 0.5f); // ascent() is negative
+	    int height = (int) (baseline + paint.descent() + 0.5f);;
+	    Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+	    Canvas canvas = new Canvas(image);
+	    canvas.drawText(text, 0, baseline, paint);
+	    Drawable drawable=new BitmapDrawable(picmomentActivity.getResources(), image);
+	    return drawable;
+	}
+
 
 }
