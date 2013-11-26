@@ -1,6 +1,11 @@
-package com.pic.moment;
+package com.pic.moment.fragment;
 
+import com.pic.moment.PopupProvider;
+import com.pic.moment.R;
 import com.pic.moment.PopupProvider.frame;
+import com.pic.moment.R.id;
+import com.pic.moment.R.layout;
+import com.pic.moment.R.style;
 
 import android.app.Activity;
 import android.app.Dialog;

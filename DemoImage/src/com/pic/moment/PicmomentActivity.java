@@ -3,6 +3,9 @@ package com.pic.moment;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import com.pic.moment.fragment.BaseFragment;
+import com.pic.moment.fragment.HomeFragment;
+
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
@@ -19,7 +22,8 @@ public class PicmomentActivity extends FragmentActivity {
 	public Stack<Fragment> stack;
 	public LayoutInflater layoutInflater;
 	public ArrayList<Img> mImages = new ArrayList<Img>();
-	
+	 String groupId= "com.getchute.android.sdk.v2";
+	 String artifactId="chute-sdk-v2-android";
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
@@ -27,12 +31,11 @@ public class PicmomentActivity extends FragmentActivity {
 		getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 		setContentView(R.layout.activity_main);
-		stack= new Stack<Fragment>();
+		  stack= new Stack<Fragment>();
 		  HomeFragment homeFragment = new HomeFragment();
 	      pushFragments(homeFragment, false, false);
 	      layoutInflater=getLayoutInflater();
 	     
-
 	}
 
 	@Override

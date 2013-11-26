@@ -57,7 +57,7 @@ public class PhotoSortrView extends View implements
 	// R.drawable.lake };
 	private static final String[] infoLines = { "Tap anywhere to add an item"};
 
-	ArrayList<Img> mImages = new ArrayList<Img>();
+	public ArrayList<Img> mImages = new ArrayList<Img>();
 	//private static int counter = 0;
 	public static boolean saveclicked = false;
 	private Context context;
@@ -224,7 +224,7 @@ public class PhotoSortrView extends View implements
 
 		}
 		invalidate();
-		delete.bringToFront();
+		//delete.bringToFront();
 		
 
 	}

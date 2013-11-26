@@ -3,6 +3,8 @@ package com.pic.moment;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import com.pic.moment.fragment.BaseFragment;
+
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;

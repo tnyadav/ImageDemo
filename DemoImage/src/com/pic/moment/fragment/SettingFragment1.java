@@ -1,4 +1,8 @@
-package com.pic.moment;
+package com.pic.moment.fragment;
+
+import com.pic.moment.R;
+import com.pic.moment.R.id;
+import com.pic.moment.R.layout;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

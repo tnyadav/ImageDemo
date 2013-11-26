@@ -1,4 +1,6 @@
-package com.pic.moment;
+package com.pic.moment.fragment;
+
+import com.pic.moment.PicmomentActivity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

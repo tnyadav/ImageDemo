@@ -1,4 +1,4 @@
-package com.pic.moment;
+package com.pic.moment.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -39,7 +39,15 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Toast;
 
+import com.pic.moment.CustomMenu;
+import com.pic.moment.PhotoSortrView;
+import com.pic.moment.PopupProvider;
+import com.pic.moment.R;
+import com.pic.moment.ShareFragment;
 import com.pic.moment.PopupProvider.frame;
+import com.pic.moment.R.id;
+import com.pic.moment.R.layout;
+import com.pic.moment.R.style;
 import com.pic.moment.multipleselection.MultiPhotoSelectActivity;
 
 public class CollageFragment extends BaseFragment{
