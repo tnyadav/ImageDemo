@@ -37,6 +37,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
@@ -61,6 +62,15 @@ public class PhotoSortrView extends View implements
 	public static boolean saveclicked = false;
 	private Context context;
 	private boolean touch_disabled=false;
+	private Resources resources;
+	public Resources getResources() {
+		return resources;
+	}
+
+	public void setResources(Resources resources) {
+		this.resources = resources;
+	}
+
 	public Button getDelete() {
 		return delete;
 	}
@@ -147,11 +157,12 @@ public class PhotoSortrView extends View implements
 	}
 
 	/** Called by activity's onResume() method to load the images */
-	public void loadImages(Context context, Drawable []IMAGES) {
+	public void loadImages(Context context, Drawable []IMAGES,boolean isText) {
 		Resources res = context.getResources();
 		 for (int i = 0; i < IMAGES.length; i++)
 		 {
-			 Img img = new Img(IMAGES[i], res);
+			 Img img = new Img(IMAGES[i], res,isText);
+			 
 		     mImages.add(img);
 		     img.load(res);
 		 }
@@ -173,11 +184,17 @@ public class PhotoSortrView extends View implements
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		// delete.setBackgroundResource(R.drawable.cl_deleteoff);
-	/*	if (getDraggableObjectAtPoint(currTouchPoint)==null && currTouchPoint      .getNumTouchPoints()==1) {
-			Toast.makeText(context, "outside", 1).show();
+		if (resources!=null) {
+			DisplayMetrics metrics = resources.getDisplayMetrics();
+
+			int displayWidth = metrics.widthPixels;
+			int displayHeight = metrics.heightPixels;
+			Drawable drawable=context.getResources().getDrawable(R.drawable.cl_main_bg);
+			drawable.setBounds(0, 0, displayWidth, displayHeight);
+			drawable.draw(canvas);
 		}
-		*/
+		
+		
 		
 		if (mImages.size() == 0) {
 			float spacing = mLinePaintTouchPointCircle.getFontSpacing();

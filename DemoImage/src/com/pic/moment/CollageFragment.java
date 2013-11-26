@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -31,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -173,27 +175,12 @@ collageDelete.setClickable(false);
 
 frameLayout=(FrameLayout)homeFragmentView.findViewById(R.id.mainFrameContainer);
 photoSorter = new PhotoSortrView(picmomentActivity);
-
+//photoSorter.setResources(picmomentActivity.getResources());
+//photoSorter.setBackgroundDrawable(picmomentActivity.getResources().getDrawable(R.drawable.cl_main_bg));
 photoSorter.setDelete(collageDelete);
-/*TextDrawable d = new TextDrawable(picmomentActivity);
-d.setText("SHOW ME TEXTljkllll\nllllllll\nlllljhkh\njkhkj\nhkhkhllhjlgj\nlljll");
-d.setTextColor(Color.BLUE);
-d.setTextSize(10);
-d.setTextAlign(Layout.Alignment.ALIGN_CENTER);
-Bitmap bitmap = 
-BitmapFactory.decodeResource(resources, gResId);*/
-/*
-Toast.makeText(picmomentActivity, d.getMinimumHeight()+" "+d.getMinimumWidth(), 1).show();*/
-/*byte [] encodeByte=Base64.decode("tnyadav",Base64.DEFAULT);
-Bitmap bitmap=BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length); 
-Drawable d = new BitmapDrawable(bitmap);*/
-/*TextDrawable d = new TextDrawable(picmomentActivity);
-d.setText("SHOW ME TEXTljkllll\nllllllll\nlllljhkh\njkhkj\nhkhkhllhjlgj\nlljll");
-d.setTextColor(Color.BLUE);*/
-/*ClipDrawable clip = new ClipDrawable(d, Gravity.LEFT, ClipDrawable.HORIZONTAL);*/
-
-//photoSorter.loadImages(picmomentActivity, new Drawable[]{makeMarker("Tnyadav\nyadav\nqainfotech",50,Color.RED)});
-
+/*TextDrawable d = new TextDrawable("tnyadav");
+photoSorter.loadImages(picmomentActivity, new Drawable[]{d});
+*/
 if (picmomentActivity.mImages.size()!=0) {
 photoSorter.mImages=picmomentActivity.mImages;
 
@@ -295,7 +282,7 @@ frameLayout.addView(photoSorter);
 
 		protected void onPostExecute(Drawable[] drawable) {
 			Dialog.dismiss();
-			photoSorter.loadImages(picmomentActivity, drawable);
+			photoSorter.loadImages(picmomentActivity, drawable,false);
 			isPresent = true;
 			showBottomBar();
 
@@ -452,19 +439,23 @@ frameLayout.addView(photoSorter);
 					dialog.setCancelable(true);
 					dialog.setContentView(R.layout.add_text);
 					final EditText et=(EditText)dialog.findViewById(R.id.et);
+					et.setTextColor(Color.BLACK);
 				    Button save = (Button)dialog.findViewById(R.id.done);
 				    save.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
+						InputMethodManager imm = (InputMethodManager)picmomentActivity.getSystemService(
+							      Context.INPUT_METHOD_SERVICE);
+							imm.hideSoftInputFromWindow(et.getWindowToken(), 0);
 						dialog.dismiss();
 						et.clearComposingText();
 						et.setFocusable(false);
-						
+						et.setBackgroundColor(Color.TRANSPARENT);
 						photoSorter.loadImages(picmomentActivity,
 								new Drawable[] { new BitmapDrawable(
 										picmomentActivity.getResources(),
-										getBitmapFromView(et)) });
+										getBitmapFromView(et)) },true);
 						CustomMenu.hide();
 						showBottomBar();
 					}
@@ -491,7 +482,7 @@ frameLayout.addView(photoSorter);
 							
 							}else {
 								Drawable drawable=getResources().getDrawable(PopupProvider.emocionsbig[index]);
-								  photoSorter.loadImages(picmomentActivity,new Drawable[] {drawable});
+								  photoSorter.loadImages(picmomentActivity,new Drawable[] {drawable},false);
 								
 							}
 							
@@ -522,13 +513,14 @@ frameLayout.addView(photoSorter);
 	        //Bind a canvas to it
 	        Canvas canvas = new Canvas(returnedBitmap);
 	        //Get the view's background
-	        Drawable bgDrawable =view.getBackground();
+	        Drawable bgDrawable =null;
 	        if (bgDrawable!=null) 
 	            //has background drawable, then draw it on the canvas
 	            bgDrawable.draw(canvas);
 	        else 
 	            //does not have background drawable, then draw white background on the canvas
-	            canvas.drawColor(getResources().getColor(R.color.image_background));
+	            canvas.drawColor(Color.TRANSPARENT);
+	            canvas.setDensity(240);
 	        // draw the view on the canvas
 	        view.draw(canvas);
 	        //return the bitmap

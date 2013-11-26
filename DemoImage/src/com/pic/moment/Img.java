@@ -3,6 +3,9 @@ package com.pic.moment;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -17,6 +20,7 @@ public class Img {
 	public Resources resources;
 	boolean deleted=false;
 	boolean bouncing=false;
+	boolean isText;
 	private int width, height;
 
 	int displayWidth;
@@ -43,9 +47,9 @@ public class Img {
 
 	private static final float SCREEN_MARGIN = 100;
 
-	public Img(Drawable resId, Resources res) {
+	public Img(Drawable resId, Resources res,boolean isText) {
 		this.drawable = resId;
-		
+		this.isText = isText;
 
 		this.resources = res;
 		this.deleted = false;
@@ -83,8 +87,13 @@ public class Img {
 		float sc = (float) (Math.max(displayWidth, displayHeight)
 				/ (float) Math.max(width, height) * Math.random() * 0.3 + 0.2);
 		sx = sy = sc;
-		setPos(cx, cy, sx, sy, (float) (Math.random() * 0.5f + 0.0f));
-		//setPos(cx, cy, 1, 1, 0);
+		if (isText) {
+			setPos(cx, cy, 1, 1, 0);
+		}else {
+			setPos(cx, cy, sx, sy, (float) (Math.random() * 0.5f + 0.0f));
+		}
+		
+		
 	}
 
 	/**
@@ -143,12 +152,22 @@ public class Img {
 		float dx = (maxX + minX) / 2;
 		float dy = (maxY + minY) / 2;
 		drawable.setBounds((int) minX, (int) minY, (int) maxX, (int) maxY);
-		//drawable.setColorFilter( 0xffff0000, Mode.MULTIPLY );
+		drawable.setColorFilter( Color.parseColor("#41EAA8"), Mode.MULTIPLY );
+		
 		canvas.translate(dx, dy);
 		canvas.rotate(angle * 180.0f / (float) Math.PI);
 		canvas.translate(-dx, -dy);
-
+		
+		float[] matrix = { 
+		        0, 0, 0, 1, 0, //red
+		        0, 1, 0, 0, 0, //green
+		        0, 0, 0, 1, 0, //blue
+		        1, 0, 0, 0, 0 //alpha
+		    };
+		//drawable.setColorFilter(new ColorMatrixColorFilter(matrix));
+		
 		drawable.draw(canvas);
+		
 
 		canvas.restore();
 
