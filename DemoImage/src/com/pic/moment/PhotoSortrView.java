@@ -27,6 +27,7 @@ package com.pic.moment;
 
 import java.util.ArrayList;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -40,10 +41,14 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.pic.moment.MultiTouchController.MultiTouchObjectCanvas;
 import com.pic.moment.MultiTouchController.PointInfo;
@@ -61,8 +66,13 @@ public class PhotoSortrView extends View implements
 	//private static int counter = 0;
 	public static boolean saveclicked = false;
 	private Context context;
-	private boolean touch_disabled=false;
 	private Resources resources;
+	private Dialog dialog;
+	
+	public void setDialog(Dialog dialog) {
+		this.dialog = dialog;
+	}
+
 	public Resources getResources() {
 		return resources;
 	}
@@ -381,9 +391,25 @@ public class PhotoSortrView extends View implements
 	}
 
 	@Override
-	public void select(Img obj) {
-		Toast.makeText(context, "1", 1).show();
+	public void shoeAddDialog(PointInfo mCurrPt) {
+		Window window = dialog.getWindow();
+		WindowManager.LayoutParams wlp = window.getAttributes();
+    	wlp.height=LayoutParams.WRAP_CONTENT;
+		wlp.width=LayoutParams.WRAP_CONTENT;
 		
+		int height=window.getDecorView().getHeight()/2;
+		int width=window.getDecorView().getWidth()/2;
+		if (height==0 && width == 0) {
+			wlp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
+		}else {
+			wlp.gravity = Gravity.TOP | Gravity.LEFT;
+			wlp.x=(int) mCurrPt.getX()-width;
+			wlp.y=(int) mCurrPt.getY()-height;	
+		}
+		
+		wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+		window.setAttributes(wlp);
+		dialog.show();
 	}
 
 	

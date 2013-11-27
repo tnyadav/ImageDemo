@@ -258,7 +258,7 @@ boolean b;
 			int pointerCount = multiTouchSupported ? (Integer) m_getPointerCount.invoke(event) : 1;
 			if (DEBUG)
 				//Log.i("MultiTouch", "Got here 1 - " + multiTouchSupported + " " + mMode + " " + handleSingleTouchEvents + " " + pointerCount);
-			Toast.makeText(context, "", 1).show();
+			Toast.makeText(context, "ghjgj", 1).show();
 			
 			if (mMode == MODE_NOTHING && !handleSingleTouchEvents && pointerCount == 1)
 				// Not handling initial single touch events, just pass them on
@@ -416,6 +416,13 @@ boolean b;
 					
 				}
 			}
+			if (!mCurrPt.isDown()){
+				selectedObject = objectCanvas.getDraggableObjectAtPoint(mCurrPt);
+				if (selectedObject==null) {
+					objectCanvas.shoeAddDialog(mCurrPt);
+				}
+				
+			}
 			break;
 
 		case MODE_DRAG:
@@ -425,8 +432,6 @@ boolean b;
 			if (!mCurrPt.isDown()) {
 				
 				if (System.currentTimeMillis()-touchTime<400) {
-					//Toast.makeText(context, "1", 1).show();
-					
 					((Img) selectedObject).bounce();
 				}
 				
@@ -858,6 +863,6 @@ boolean b;
 		 *            The current touch point.
 		 */
 		public void selectObject(T obj, PointInfo touchPoint);
-		public void select(T obj);
+		public void shoeAddDialog(PointInfo mCurrPt);
 	}
 }

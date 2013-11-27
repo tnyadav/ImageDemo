@@ -57,7 +57,8 @@ private Button collageBack,collageDelete;
 private final int RESULT_LOAD_IMAGE = 001;
 private final int CAPTURE_IMAGE = 002;
 private FrameLayout frameLayout;
-Dialog dialog;
+//Dialog dialog;
+Dialog addDialog;
 Uri imageUri= null;
 boolean isPresent=false;
 private String temPath= Environment.getExternalStorageDirectory()+"/PicMomentsTemp";
@@ -180,15 +181,10 @@ collageBack.setOnClickListener(new OnClickListener() {
 });
 collageDelete = (Button)homeFragmentView.findViewById(R.id.collageDelete);
 collageDelete.setClickable(false);
-
 frameLayout=(FrameLayout)homeFragmentView.findViewById(R.id.mainFrameContainer);
 photoSorter = new PhotoSortrView(picmomentActivity);
-//photoSorter.setResources(picmomentActivity.getResources());
-//photoSorter.setBackgroundDrawable(picmomentActivity.getResources().getDrawable(R.drawable.cl_main_bg));
 photoSorter.setDelete(collageDelete);
-/*TextDrawable d = new TextDrawable("tnyadav");
-photoSorter.loadImages(picmomentActivity, new Drawable[]{d});
-*/
+photoSorter.setDialog(getDailog());
 if (picmomentActivity.mImages.size()!=0) {
 photoSorter.mImages=picmomentActivity.mImages;
 
@@ -349,7 +345,7 @@ frameLayout.addView(photoSorter);
  			@Override
  			public void onClick(View arg0) {
  				
- 				addImage();
+ 				showAddDialog().show();
  				
  				}
  		});	
@@ -378,130 +374,7 @@ frameLayout.addView(photoSorter);
        CustomMenu.show(picmomentActivity, view);
 		}
 		
-		
-		
-		private void addImage() {
-			// custom dialog
-			final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme);
-			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-			dialog.setCanceledOnTouchOutside(true);
-			Window window = dialog.getWindow();
-			WindowManager.LayoutParams wlp = window.getAttributes();
-			wlp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
-			wlp.height=LayoutParams.WRAP_CONTENT;
-			wlp.width=LayoutParams.WRAP_CONTENT;
-			//wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-			window.setAttributes(wlp);
-			//window.clearFlags(LayoutParams.FLAG_DIM_BEHIND);
-			dialog.setCancelable(true);
-			dialog.setContentView(R.layout.dialog);
-		    Button dialogUseCamera = (Button)dialog.findViewById(R.id.dialogUseCamera);
-		    dialogUseCamera.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-				
-					takePicture();
-					dialog.dismiss();
-					CustomMenu.hide();
-					
-				}
-			});
-		    Button dialogAddPhoto = (Button)dialog.findViewById(R.id.dialogAddPhoto);
-		    dialogAddPhoto.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					
-						/*	Intent i = new Intent(
-									Intent.ACTION_PICK,
-									android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);*/
-					Intent i = new Intent(picmomentActivity,MultiPhotoSelectActivity.class);
-							startActivityForResult(i, RESULT_LOAD_IMAGE);
-							dialog.dismiss();
-							CustomMenu.hide();
-				}
-			});
-		    Button dialogAddText = (Button)dialog.findViewById(R.id.dialogAddText);
-		    dialogAddText.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					
-					dialog.dismiss();
-					
-					
-					final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme_back);
-					dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-					dialog.setCanceledOnTouchOutside(true);
-					Window window = dialog.getWindow();
-					WindowManager.LayoutParams wlp = window.getAttributes();
-					wlp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
-					wlp.height=LayoutParams.WRAP_CONTENT;
-					wlp.width=LayoutParams.WRAP_CONTENT;
-					/*wlp.x=50;
-					wlp.y=150;*/
-					wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-					window.setAttributes(wlp);
-					//window.clearFlags(LayoutParams.FLAG_DIM_BEHIND);
-					dialog.setCancelable(true);
-					dialog.setContentView(R.layout.add_text);
-					final EditText et=(EditText)dialog.findViewById(R.id.et);
-					et.setTextColor(Color.BLACK);
-				    Button save = (Button)dialog.findViewById(R.id.done);
-				    save.setOnClickListener(new OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						InputMethodManager imm = (InputMethodManager)picmomentActivity.getSystemService(
-							      Context.INPUT_METHOD_SERVICE);
-							imm.hideSoftInputFromWindow(et.getWindowToken(), 0);
-						dialog.dismiss();
-						et.clearComposingText();
-						et.setFocusable(false);
-						et.setBackgroundColor(Color.TRANSPARENT);
-						photoSorter.loadImages(picmomentActivity,
-								new Drawable[] { new BitmapDrawable(
-										picmomentActivity.getResources(),
-										getBitmapFromView(et)) },true);
-						CustomMenu.hide();
-						showBottomBar();
-					}
-				});
-				  
-					dialog.show();
-					
-				}
-			});
-		    Button dialogAddSticker = (Button)dialog.findViewById(R.id.dialogAddSticker);
-		    dialogAddSticker.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					
-					CustomMenu.hide();
-					View	navigationViewContainer = PopupProvider.getEmocione(picmomentActivity, new frame() {
-						
-						@Override
-						public void frameClicked(int index) {
-							if (index==9) {
-								CustomMenu.hide();
-								showBottomBar();
-							
-							}else {
-								Drawable drawable=getResources().getDrawable(PopupProvider.emocionsbig[index]);
-								  photoSorter.loadImages(picmomentActivity,new Drawable[] {drawable},false);
-								
-							}
-							
-						}
-					});
-					dialog.dismiss();
-					CustomMenu.show(picmomentActivity,navigationViewContainer);
-				}
-			});
-			dialog.show();
-		}
 		private OnClickListener onClickListener= new OnClickListener() {
 			
 			@Override
@@ -551,5 +424,131 @@ frameLayout.addView(photoSorter);
 		    canvas.drawText(text, 10, textSize, paint);
 		    Drawable drawable=new BitmapDrawable(picmomentActivity.getResources(), largeWhiteBitmap);
 		    return drawable;
+		}
+		private Dialog getDailog() {
+			
+			final Dialog dialog1 = new Dialog(picmomentActivity,R.style.custom_dialog_theme);
+			dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			dialog1.setCanceledOnTouchOutside(true);
+			dialog1.setCancelable(true);
+			dialog1.setContentView(R.layout.dialog);
+			Button dialogUseCamera = (Button)dialog1.findViewById(R.id.dialogUseCamera);
+			dialogUseCamera.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+				
+					takePicture();
+					dialog1.dismiss();
+					CustomMenu.hide();
+					
+				}
+			});
+			Button dialogAddPhoto = (Button)dialog1.findViewById(R.id.dialogAddPhoto);
+			dialogAddPhoto.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+						/*	Intent i = new Intent(
+									Intent.ACTION_PICK,
+									android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);*/
+					Intent i = new Intent(picmomentActivity,MultiPhotoSelectActivity.class);
+							startActivityForResult(i, RESULT_LOAD_IMAGE);
+							dialog1.dismiss();
+							CustomMenu.hide();
+				}
+			});
+			Button dialogAddText = (Button)dialog1.findViewById(R.id.dialogAddText);
+			dialogAddText.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					dialog1.dismiss();
+					
+				/*	
+					final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme_back);
+					dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					dialog.setCanceledOnTouchOutside(true);
+					Window window = dialog.getWindow();
+					WindowManager.LayoutParams wlp = window.getAttributes();
+					wlp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
+					wlp.height=LayoutParams.WRAP_CONTENT;
+					wlp.width=LayoutParams.WRAP_CONTENT;
+					wlp.x=50;
+					wlp.y=150;
+					wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+					window.setAttributes(wlp);
+					//window.clearFlags(LayoutParams.FLAG_DIM_BEHIND);
+					dialog.setCancelable(true);
+					dialog.setContentView(R.layout.add_text);
+					final EditText et=(EditText)dialog.findViewById(R.id.et);
+					et.setTextColor(Color.BLACK);
+				    Button save = (Button)dialog.findViewById(R.id.done);
+				    save.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						InputMethodManager imm = (InputMethodManager)picmomentActivity.getSystemService(
+							      Context.INPUT_METHOD_SERVICE);
+							imm.hideSoftInputFromWindow(et.getWindowToken(), 0);
+						dialog.dismiss();
+						et.clearComposingText();
+						et.setFocusable(false);
+						et.setBackgroundColor(Color.TRANSPARENT);
+						photoSorter.loadImages(picmomentActivity,
+								new Drawable[] { new BitmapDrawable(
+										picmomentActivity.getResources(),
+										getBitmapFromView(et)) },true);
+						CustomMenu.hide();
+						showBottomBar();
+					}
+				});
+				  
+					dialog.show();*/
+					
+				}
+			});
+			Button dialogAddSticker = (Button)dialog1.findViewById(R.id.dialogAddSticker);
+			dialogAddSticker.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					CustomMenu.hide();
+					View	navigationViewContainer = PopupProvider.getEmocione(picmomentActivity, new frame() {
+						
+						@Override
+						public void frameClicked(int index) {
+							if (index==9) {
+								CustomMenu.hide();
+								showBottomBar();
+							
+							}else {
+								Drawable drawable=getResources().getDrawable(PopupProvider.emocionsbig[index]);
+								  photoSorter.loadImages(picmomentActivity,new Drawable[] {drawable},false);
+								
+							}
+							
+						}
+					});
+					dialog1.dismiss();
+					CustomMenu.show(picmomentActivity,navigationViewContainer);
+				}
+			});
+			return dialog1;
+		}
+		
+		private Dialog showAddDialog() {
+			Dialog dialog=getDailog();
+			Window window = dialog.getWindow();
+			WindowManager.LayoutParams wlp = window.getAttributes();
+	    	wlp.height=LayoutParams.WRAP_CONTENT;
+			wlp.width=LayoutParams.WRAP_CONTENT;
+			wlp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
+			wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+			window.setAttributes(wlp);
+			return dialog;
 		}
 }
