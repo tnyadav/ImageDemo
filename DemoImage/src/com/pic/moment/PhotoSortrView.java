@@ -217,7 +217,7 @@ public class PhotoSortrView extends View implements
 			if (saveclicked) {
 				
 				for (int i = 0; i <  mImages.size(); i++)
-					if (mImages.get(i).deleted) {
+					if (mImages.get(i).isDeleted()) {
 
 					} else {
 						mImages.get(i).draw(canvas);
@@ -234,7 +234,7 @@ public class PhotoSortrView extends View implements
 
 		}
 		invalidate();
-		//delete.bringToFront();
+		delete.bringToFront();
 		
 
 	}
@@ -291,14 +291,13 @@ public class PhotoSortrView extends View implements
 			if (e1.getY() - e2.getY() > SWIPE_MIN_DISTANCE
 					&& Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
 				// delete.setBackgroundResource(R.drawable.cl_deleteopen);
-				// final Img img = multiTouchController.selectedObject;
 				final Img img = getDraggableObjectAtPoint(currTouchPoint);
 				if (img != null) {
 					// img.deleted = true;
-					img.minX = img.displayWidth - 100;
-					img.maxX = img.displayWidth;
-					img.minY = 0;
-					img.maxY = 100;
+					img.setMinX(img.getDisplayWidth() - 100);
+					img.setMaxX(img.getDisplayWidth());
+					img.setMinY(0);
+					img.setMaxY(100);
 
 					/*
 					 * cx = e1.getX(); cy= e1.getY();
@@ -357,7 +356,7 @@ public class PhotoSortrView extends View implements
 			
 			mImages.remove(img);
 			mImages.add(img);
-			img.deleted = false;
+			img.setDeleted(false);
 	
 		} else {
 			// Called with img == null when drag stops.

@@ -1,5 +1,7 @@
 package com.pic.moment.fragment;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -9,6 +11,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -40,6 +43,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.Toast;
 
 import com.pic.moment.CustomMenu;
+import com.pic.moment.Img;
 import com.pic.moment.PhotoSortrView;
 import com.pic.moment.PopupProvider;
 import com.pic.moment.R;
@@ -49,6 +53,9 @@ import com.pic.moment.R.id;
 import com.pic.moment.R.layout;
 import com.pic.moment.R.style;
 import com.pic.moment.multipleselection.MultiPhotoSelectActivity;
+import com.pic.moment.utils.CoordinatrProvider;
+import com.pic.moment.utils.FrameCoordinete;
+import com.pic.moment.utils.Util;
 
 public class CollageFragment extends BaseFragment{
 private View homeFragmentView;
@@ -57,7 +64,6 @@ private Button collageBack,collageDelete;
 private final int RESULT_LOAD_IMAGE = 001;
 private final int CAPTURE_IMAGE = 002;
 private FrameLayout frameLayout;
-//Dialog dialog;
 Dialog addDialog;
 Uri imageUri= null;
 boolean isPresent=false;
@@ -277,7 +283,13 @@ frameLayout.addView(photoSorter);
            
             Drawable []drawable=new Drawable[urls.length];
             for (int i = 0; i < drawable.length; i++) {
-				Drawable drawable2=new BitmapDrawable(getResources(),addWhiteBorder(BitmapFactory.decodeFile(urls[i]), 10));
+            	BitmapFactory.Options option = new BitmapFactory.Options();
+                option.inJustDecodeBounds = true;
+            	Bitmap bitmap=BitmapFactory.decodeFile(urls[i]);
+            	 option.inSampleSize = 4;
+            	bitmap=addWhiteBorder(bitmap, 10);
+				Drawable drawable2=new BitmapDrawable(getResources(),bitmap);
+				//bitmap.recycle();
 				drawable[i]=drawable2; 
             }
               
@@ -332,7 +344,19 @@ frameLayout.addView(photoSorter);
  					
  					@Override
  					public void frameClicked(int index) {
- 						Toast.makeText(picmomentActivity, ""+index, 1).show();
+ 					List<FrameCoordinete> frameCoordinetes=	CoordinatrProvider.getFremeCoordinate(picmomentActivity.getResources(), 0);
+ 					for (int i = 0; i < frameCoordinetes.size(); i++) {
+						Img img = photoSorter.mImages.get(i);
+						FrameCoordinete frameCoordinete=frameCoordinetes.get(i);
+						img.setMinX(frameCoordinete.getMinX());
+						img.setMaxX(frameCoordinete.getMaxX());
+						img.setMinY(frameCoordinete.getMinY());
+						img.setMaxY(frameCoordinete.getMaxY());
+						img.setCollege(true);
+						photoSorter.mImages.set(i, img);
+						
+					}
+ 					photoSorter.invalidate();
  					}
  				},onClickListener);
  				CustomMenu.show(picmomentActivity,navigationViewContainer);
@@ -360,7 +384,7 @@ frameLayout.addView(photoSorter);
 						photoSorter.getHeight(), Bitmap.Config.ARGB_8888);
 				Fragment shareFragment=new ShareFragment();
 				Bundle bundle=new Bundle();
-				bundle.putParcelable("image", getBitmapFromView(photoSorter));
+				bundle.putParcelable("image", Util.getBitmapFromView(photoSorter));
 				shareFragment.setArguments(bundle);
 				picmomentActivity.pushFragments(shareFragment, true, true);
  			}
@@ -384,30 +408,8 @@ frameLayout.addView(photoSorter);
 				
 			}
 		};
-		public Bitmap getBitmapFromView(View view) {
-			
-	        //Define a bitmap with the same size as the view
-			view.setBackgroundColor(Color.TRANSPARENT);
-			view.setDrawingCacheEnabled(true);
-			view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-	        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),Bitmap.Config.ARGB_8888);
-	        //Bind a canvas to it
-	        Canvas canvas = new Canvas(returnedBitmap);
-	        //Get the view's background
-	        Drawable bgDrawable =null;
-	        if (bgDrawable!=null) 
-	            //has background drawable, then draw it on the canvas
-	            bgDrawable.draw(canvas);
-	        else 
-	            //does not have background drawable, then draw white background on the canvas
-	            canvas.drawColor(Color.TRANSPARENT);
-	            canvas.setDensity(240);
-	        // draw the view on the canvas
-	        view.draw(canvas);
-	        //return the bitmap
-	        return returnedBitmap;
-	    }
-		private Drawable makeMarker(String text, int textSize, int textColor){
+		
+		/*private Drawable makeMarker(String text, int textSize, int textColor){
 			Bitmap largeWhiteBitmap = Bitmap.createBitmap(textSize * text.length(), textSize*2 , Bitmap.Config.ARGB_8888);
 
 		    Canvas canvas = new Canvas(largeWhiteBitmap);
@@ -424,7 +426,11 @@ frameLayout.addView(photoSorter);
 		    canvas.drawText(text, 10, textSize, paint);
 		    Drawable drawable=new BitmapDrawable(picmomentActivity.getResources(), largeWhiteBitmap);
 		    return drawable;
-		}
+		}*/
+		
+		/**
+		 *dialog for addding image/text customview
+		 */
 		private Dialog getDailog() {
 			
 			final Dialog dialog1 = new Dialog(picmomentActivity,R.style.custom_dialog_theme);
@@ -467,7 +473,7 @@ frameLayout.addView(photoSorter);
 					
 					dialog1.dismiss();
 					
-				/*	
+					
 					final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme_back);
 					dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 					dialog.setCanceledOnTouchOutside(true);
@@ -500,13 +506,13 @@ frameLayout.addView(photoSorter);
 						photoSorter.loadImages(picmomentActivity,
 								new Drawable[] { new BitmapDrawable(
 										picmomentActivity.getResources(),
-										getBitmapFromView(et)) },true);
+										Util.getBitmapFromView(et)) },true);
 						CustomMenu.hide();
 						showBottomBar();
 					}
 				});
 				  
-					dialog.show();*/
+					dialog.show();
 					
 				}
 			});

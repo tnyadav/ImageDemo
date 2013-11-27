@@ -15,43 +15,198 @@ import com.pic.moment.MultiTouchController.PositionAndScale;
 public class Img {
 
 	private int resId;
+   
 
 	private Drawable drawable;
-	public Resources resources;
-	boolean deleted=false;
-	boolean bouncing=false;
-	boolean isText;
+	private Resources resources;
+	private boolean deleted = false;
+	private boolean bouncing = false;
+	private boolean isText;
+	
 	private int width, height;
-
-	int displayWidth;
-
+	private int displayWidth;
 	private int displayHeight;
-
-	float centerX;
-
-	float centerY;
-
+	
+	private float centerX;
+	private float centerY;
 	private float scaleX;
-
 	private float scaleY;
-
+	
 	private float angle;
-
-	float minX;
-
-	float maxX;
-
-	float minY;
-
-	float maxY;
-
+	
+	private float minX;
+	private float maxX;
+	private float minY;
+	private float maxY;
+	private boolean isCollege=false;
 	private static final float SCREEN_MARGIN = 100;
 
-	public Img(Drawable resId, Resources res,boolean isText) {
+	 public int getResId() {
+			return resId;
+		}
+
+		public void setResId(int resId) {
+			this.resId = resId;
+		}
+
+		public Drawable getDrawable() {
+			return drawable;
+		}
+
+		public void setDrawable(Drawable drawable) {
+			this.drawable = drawable;
+		}
+
+		public Resources getResources() {
+			return resources;
+		}
+
+		public void setResources(Resources resources) {
+			this.resources = resources;
+		}
+
+		public boolean isDeleted() {
+			return deleted;
+		}
+
+		public void setDeleted(boolean deleted) {
+			this.deleted = deleted;
+		}
+
+		public boolean isBouncing() {
+			return bouncing;
+		}
+
+		public void setBouncing(boolean bouncing) {
+			this.bouncing = bouncing;
+		}
+
+		public boolean isText() {
+			return isText;
+		}
+
+		public void setText(boolean isText) {
+			this.isText = isText;
+		}
+
+		public int getWidth() {
+			return width;
+		}
+
+		public void setWidth(int width) {
+			this.width = width;
+		}
+
+		public int getHeight() {
+			return height;
+		}
+
+		public void setHeight(int height) {
+			this.height = height;
+		}
+
+		public int getDisplayWidth() {
+			return displayWidth;
+		}
+
+		public void setDisplayWidth(int displayWidth) {
+			this.displayWidth = displayWidth;
+		}
+
+		public int getDisplayHeight() {
+			return displayHeight;
+		}
+
+		public void setDisplayHeight(int displayHeight) {
+			this.displayHeight = displayHeight;
+		}
+
+		public float getCenterX() {
+			return centerX;
+		}
+
+		public void setCenterX(float centerX) {
+			this.centerX = centerX;
+		}
+
+		public float getCenterY() {
+			return centerY;
+		}
+
+		public void setCenterY(float centerY) {
+			this.centerY = centerY;
+		}
+
+		public float getScaleX() {
+			return scaleX;
+		}
+
+		public void setScaleX(float scaleX) {
+			this.scaleX = scaleX;
+		}
+
+		public float getScaleY() {
+			return scaleY;
+		}
+
+		public void setScaleY(float scaleY) {
+			this.scaleY = scaleY;
+		}
+
+		public float getAngle() {
+			return angle;
+		}
+
+		public void setAngle(float angle) {
+			this.angle = angle;
+		}
+
+		public float getMinX() {
+			return minX;
+		}
+
+		public void setMinX(float minX) {
+			this.minX = minX;
+		}
+
+		public float getMaxX() {
+			return maxX;
+		}
+
+		public void setMaxX(float maxX) {
+			this.maxX = maxX;
+		}
+
+		public float getMinY() {
+			return minY;
+		}
+
+		public void setMinY(float minY) {
+			this.minY = minY;
+		}
+
+		public float getMaxY() {
+			return maxY;
+		}
+
+		public void setMaxY(float maxY) {
+			this.maxY = maxY;
+		}
+	
+	
+	
+	public boolean isCollege() {
+			return isCollege;
+		}
+
+		public void setCollege(boolean isCollege) {
+			this.isCollege = isCollege;
+		}
+
+	public Img(Drawable resId, Resources res, boolean isText) {
 		this.drawable = resId;
 		this.isText = isText;
-
-		this.resources = res;
+        this.resources = res;
 		this.deleted = false;
 		getMetrics(res);
 	}
@@ -76,10 +231,7 @@ public class Img {
 		getMetrics(res);
 		this.width = drawable.getIntrinsicWidth();
 		this.height = drawable.getIntrinsicHeight();
-		
-		
-		
-		
+
 		float cx, cy, sx, sy;
 		cx = (float) /* (Math.random() * */(displayWidth) / 2;
 		cy = (float) /* (Math.random() * */(displayHeight) / 2;
@@ -89,23 +241,23 @@ public class Img {
 		sx = sy = sc;
 		if (isText) {
 			setPos(cx, cy, 1, 1, 0);
-		}else {
+		} else {
 			setPos(cx, cy, sx, sy, (float) (Math.random() * 0.5f + 0.0f));
 		}
-		
-		
+
 	}
 
 	/**
-	 * Called by activity's onPause() method to free memory used for loading
-	 * the images
+	 * Called by activity's onPause() method to free memory used for loading the
+	 * images
 	 */
 	public void unload() {
 		this.drawable = null;
 	}
 
 	/** Set the position and scale of an image in screen coordinates */
-	public boolean setPos(PositionAndScale newImgPosAndScale,int mUIMode,int UI_MODE_ANISOTROPIC_SCALE ) {
+	public boolean setPos(PositionAndScale newImgPosAndScale, int mUIMode,
+			int UI_MODE_ANISOTROPIC_SCALE) {
 		return setPos(
 				newImgPosAndScale.getXOff(),
 				newImgPosAndScale.getYOff(),
@@ -123,8 +275,7 @@ public class Img {
 		float ws = (width / 2) * scaleX, hs = (height / 2) * scaleY;
 		float newMinX = centerX - ws, newMinY = centerY - hs, newMaxX = centerX
 				+ ws, newMaxY = centerY + hs;
-		if (newMinX > displayWidth - SCREEN_MARGIN
-				|| newMaxX < SCREEN_MARGIN
+		if (newMinX > displayWidth - SCREEN_MARGIN || newMaxX < SCREEN_MARGIN
 				|| newMinY > displayHeight - SCREEN_MARGIN
 				|| newMaxY < SCREEN_MARGIN)
 			return false;
@@ -152,22 +303,23 @@ public class Img {
 		float dx = (maxX + minX) / 2;
 		float dy = (maxY + minY) / 2;
 		drawable.setBounds((int) minX, (int) minY, (int) maxX, (int) maxY);
-		drawable.setColorFilter( Color.parseColor("#41EAA8"), Mode.MULTIPLY );
+		if (!isCollege) {
+			canvas.translate(dx, dy);
+			canvas.rotate(angle * 180.0f / (float) Math.PI);
+			canvas.translate(-dx, -dy);
+		}
+		//drawable.setColorFilter(Color.parseColor("#41EAA8"), Mode.MULTIPLY);
+
 		
-		canvas.translate(dx, dy);
-		canvas.rotate(angle * 180.0f / (float) Math.PI);
-		canvas.translate(-dx, -dy);
-		
-		float[] matrix = { 
-		        0, 0, 0, 1, 0, //red
-		        0, 1, 0, 0, 0, //green
-		        0, 0, 0, 1, 0, //blue
-		        1, 0, 0, 0, 0 //alpha
-		    };
-		//drawable.setColorFilter(new ColorMatrixColorFilter(matrix));
-		
+
+		float[] matrix = { 0, 0, 0, 0.1f, 0, // red
+				0,  0.1f, 0, 0, 0, // green
+				0, 0, 0, 0.1f, 0, // blue
+				0.1f, 0, 0, 0, 0 // alpha
+		};
+	//	 drawable.setColorFilter(new ColorMatrixColorFilter(matrix));
+
 		drawable.draw(canvas);
-		
 
 		canvas.restore();
 
@@ -177,78 +329,29 @@ public class Img {
 	 * int randomWithRange(int min, int max) { int range = (max - min) + 1;
 	 * return (int)(Math.random() * range) + min; }
 	 */
-	public Drawable getDrawable() {
-		return drawable;
-	}
 
-	public int getWidth() {
-		return width;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-
-	public float getCenterX() {
-		return centerX;
-	}
-
-	public float getCenterY() {
-		return centerY;
-	}
-
-	public float getScaleX() {
-		return scaleX;
-	}
-
-	public float getScaleY() {
-		return scaleY;
-	}
-
-	public float getAngle() {
-		return angle;
-	}
-
-	// FIXME: these need to be updated for rotation
-	public float getMinX() {
-		return minX;
-	}
-
-	public float getMaxX() {
-		return maxX;
-	}
-
-	public float getMinY() {
-		return minY;
-	}
-
-	public float getMaxY() {
-		return maxY;
-	}
 	public void bounce() {
 		if (!bouncing) {
-			bouncing=true;
-			minX = minX -10;
+			bouncing = true;
+			minX = minX - 10;
 			maxX = maxX + 10;
 			minY = minY - 10;
 			maxY = maxY + 10;
-		
-			
-			//multiTouchController.selectedObject=null;
+
+			// multiTouchController.selectedObject=null;
 			new Handler().postDelayed(new Runnable() {
-				
+
 				@Override
 				public void run() {
-					minX = minX+10 ;
-					maxX = maxX-10 ;
-					minY = minY+10 ;
-					maxY = maxY-10 ;
-					bouncing=false;
-					
-			}
+					minX = minX + 10;
+					maxX = maxX - 10;
+					minY = minY + 10;
+					maxY = maxY - 10;
+					bouncing = false;
+
+				}
 			}, 200);
 		}
-			
-	
+
 	}
 }
