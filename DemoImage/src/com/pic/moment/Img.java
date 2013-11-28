@@ -22,6 +22,7 @@ public class Img {
 	private boolean deleted = false;
 	private boolean bouncing = false;
 	private boolean isText;
+	private boolean isCollege=false;
 	
 	private int width, height;
 	private int displayWidth;
@@ -38,7 +39,7 @@ public class Img {
 	private float maxX;
 	private float minY;
 	private float maxY;
-	private boolean isCollege=false;
+	
 	private static final float SCREEN_MARGIN = 100;
 
 	 public int getResId() {
@@ -232,13 +233,16 @@ public class Img {
 		this.width = drawable.getIntrinsicWidth();
 		this.height = drawable.getIntrinsicHeight();
 
-		float cx, cy, sx, sy;
+		float cx, cy, sx, sy,sc;
 		cx = (float) /* (Math.random() * */(displayWidth) / 2;
 		cy = (float) /* (Math.random() * */(displayHeight) / 2;
 
-		float sc = (float) (Math.max(displayWidth, displayHeight)
-				/ (float) Math.max(width, height) * Math.random() * 0.3 + 0.2);
-		sx = sy = sc;
+		/*float sc = (float) (Math.max(displayWidth, displayHeight)
+				/ (float) Math.max(width, height) * Math.random() * 0.7 + 0.6);
+		
+		float sc = (float) ((float)  Math.random() * 0.7 + 0.6);*/
+
+		sx = sy = sc=0.7f;
 		if (isText) {
 			setPos(cx, cy, 1, 1, 0);
 		} else {

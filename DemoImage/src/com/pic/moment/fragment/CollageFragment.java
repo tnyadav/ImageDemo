@@ -8,6 +8,8 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,6 +30,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Layout;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +58,9 @@ import com.pic.moment.R.style;
 import com.pic.moment.multipleselection.MultiPhotoSelectActivity;
 import com.pic.moment.utils.CoordinatrProvider;
 import com.pic.moment.utils.FrameCoordinete;
+import com.pic.moment.utils.ScalingUtilities;
 import com.pic.moment.utils.Util;
+import com.pic.moment.utils.ScalingUtilities.ScalingLogic;
 
 public class CollageFragment extends BaseFragment{
 private View homeFragmentView;
@@ -280,13 +285,27 @@ frameLayout.addView(photoSorter);
             Dialog.show();
          }
      protected Drawable[] doInBackground(String...urls) {
-           
+    	 Resources res=picmomentActivity.getResources();
+    	 DisplayMetrics metrics = res.getDisplayMetrics();
+ 		// The DisplayMetrics don't seem to always be updated on screen
+ 		// rotate, so we hard code a portrait
+ 		// screen orientation for the non-rotated screen here...
+ 		// this.displayWidth = metrics.widthPixels;
+ 		// this.displayHeight = metrics.heightPixels;
+ 		int displayWidth = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
+ 				.max(metrics.widthPixels, metrics.heightPixels) : Math.min(
+ 				metrics.widthPixels, metrics.heightPixels);
+ 	    int displayHeight = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
+ 				.min(metrics.widthPixels, metrics.heightPixels) : Math.max(
+ 				metrics.widthPixels, metrics.heightPixels);
             Drawable []drawable=new Drawable[urls.length];
             for (int i = 0; i < drawable.length; i++) {
-            	BitmapFactory.Options option = new BitmapFactory.Options();
-                option.inJustDecodeBounds = true;
+            	
             	Bitmap bitmap=BitmapFactory.decodeFile(urls[i]);
-            	 option.inSampleSize = 4;
+            	//bitmap = Bitmap.createScaledBitmap(bitmap,(int)(bitmap.getWidth()*0.2), (int)(bitmap.getHeight()*0.2), true);
+            	// option.inSampleSize = 4;
+            	 bitmap = ScalingUtilities.createScaledBitmap(bitmap, displayWidth,
+            			displayHeight, ScalingLogic.FIT);
             	bitmap=addWhiteBorder(bitmap, 10);
 				Drawable drawable2=new BitmapDrawable(getResources(),bitmap);
 				//bitmap.recycle();
@@ -344,7 +363,7 @@ frameLayout.addView(photoSorter);
  					
  					@Override
  					public void frameClicked(int index) {
- 					List<FrameCoordinete> frameCoordinetes=	CoordinatrProvider.getFremeCoordinate(picmomentActivity.getResources(), 0);
+ 					List<FrameCoordinete> frameCoordinetes=	CoordinatrProvider.getFremeCoordinate(picmomentActivity.getResources(),index);
  					for (int i = 0; i < frameCoordinetes.size(); i++) {
 						Img img = photoSorter.mImages.get(i);
 						FrameCoordinete frameCoordinete=frameCoordinetes.get(i);
