@@ -56,7 +56,7 @@ import com.pic.moment.R.id;
 import com.pic.moment.R.layout;
 import com.pic.moment.R.style;
 import com.pic.moment.multipleselection.MultiPhotoSelectActivity;
-import com.pic.moment.utils.CoordinatrProvider;
+import com.pic.moment.utils.FrameCoordinatrProvider;
 import com.pic.moment.utils.FrameCoordinete;
 import com.pic.moment.utils.ScalingUtilities;
 import com.pic.moment.utils.Util;
@@ -363,8 +363,9 @@ frameLayout.addView(photoSorter);
  					
  					@Override
  					public void frameClicked(int index) {
- 					List<FrameCoordinete> frameCoordinetes=	CoordinatrProvider.getFremeCoordinate(picmomentActivity.getResources(),index);
- 					for (int i = 0; i < frameCoordinetes.size(); i++) {
+ 					List<FrameCoordinete> frameCoordinetes=	FrameCoordinatrProvider.getFremeCoordinate(picmomentActivity.getResources(),index);
+ 				
+ 					for (int i = 0; i < Math.min(frameCoordinetes.size(),photoSorter.mImages.size()); i++) {
 						Img img = photoSorter.mImages.get(i);
 						FrameCoordinete frameCoordinete=frameCoordinetes.get(i);
 						img.setMinX(frameCoordinete.getMinX());
@@ -377,7 +378,7 @@ frameLayout.addView(photoSorter);
 					}
  					photoSorter.invalidate();
  					}
- 				},onClickListener);
+ 				},onClickListener,photoSorter.mImages.size());
  				CustomMenu.show(picmomentActivity,navigationViewContainer);
  				
  			}

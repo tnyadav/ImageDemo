@@ -5,17 +5,20 @@ import java.util.Stack;
 
 import com.pic.moment.fragment.BaseFragment;
 import com.pic.moment.fragment.HomeFragment;
+import com.pic.moment.utils.Util;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 public class PicmomentActivity extends FragmentActivity {
 
@@ -30,7 +33,7 @@ public class PicmomentActivity extends FragmentActivity {
 
 		getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-		setContentView(R.layout.activity_main);
+		  setContentView(R.layout.activity_main);
 		  stack= new Stack<Fragment>();
 		  HomeFragment homeFragment = new HomeFragment();
 	      pushFragments(homeFragment, false, false);
