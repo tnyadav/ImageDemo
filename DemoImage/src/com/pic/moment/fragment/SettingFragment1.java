@@ -1,9 +1,5 @@
 package com.pic.moment.fragment;
 
-import com.pic.moment.R;
-import com.pic.moment.R.id;
-import com.pic.moment.R.layout;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +7,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+
+import com.pic.moment.R;
 
 public class SettingFragment1 extends BaseFragment{
 private View homeFragmentView;

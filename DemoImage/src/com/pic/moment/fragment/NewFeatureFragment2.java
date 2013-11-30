@@ -1,9 +1,5 @@
 package com.pic.moment.fragment;
 
-import com.pic.moment.R;
-import com.pic.moment.R.id;
-import com.pic.moment.R.layout;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +8,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-public class HomeFragment3 extends BaseFragment{
+import com.pic.moment.R;
+
+public class NewFeatureFragment2 extends BaseFragment{
 private View homeFragmentView;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		homeFragmentView = inflater.inflate(R.layout.homefragment3, container, false);
+		homeFragmentView = inflater.inflate(R.layout.newfeaturefragment2, container, false);
 		 Button  new2Done = (Button) homeFragmentView.findViewById(R.id.new2Done);
 		 new2Done.setOnClickListener(new OnClickListener() {
 				

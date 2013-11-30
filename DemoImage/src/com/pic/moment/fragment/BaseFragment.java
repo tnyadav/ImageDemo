@@ -1,9 +1,9 @@
 package com.pic.moment.fragment;
 
-import com.pic.moment.PicmomentActivity;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+
+import com.pic.moment.activity.PicmomentActivity;
 
 public abstract class BaseFragment extends Fragment {
 	public PicmomentActivity picmomentActivity;
@@ -12,7 +12,7 @@ public abstract class BaseFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		picmomentActivity = (PicmomentActivity) this.getActivity();
+		picmomentActivity = (PicmomentActivity) getActivity();
 
 	}
 public boolean onBackPressed(){

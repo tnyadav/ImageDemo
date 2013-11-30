@@ -3,25 +3,30 @@ package com.pic.moment.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pic.moment.Img;
-
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Toast;
 
+import com.pic.moment.ImgCollage;
+
 public class Util {
+	
+	private static Resources res ;
+	private static DisplayMetrics metrics;
 	public static Bitmap getBitmapFromView(View view) {
 
 		// Define a bitmap with the same size as the view
 		view.setBackgroundColor(Color.TRANSPARENT);
 		view.setDrawingCacheEnabled(true);
-		view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+		view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
 		Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(),
 				view.getHeight(), Bitmap.Config.ARGB_8888);
 		// Bind a canvas to it
@@ -58,14 +63,32 @@ public class Util {
 		}
 		return false;
 	}
-	public List<Img> filterList(List<Img> img) {
+	public static List<ImgCollage> filterList(List<ImgCollage> img) {
 		
-       List<Img> imList =new ArrayList<Img>();
-	       for (Img thingy : img) {
+       List<ImgCollage> imList =new ArrayList<ImgCollage>();
+	       for (ImgCollage thingy : img) {
 	        if (!thingy.isDeleted()) {
 	        	imList.add(thingy);
 	        }            
 	    }
 	    return imList;
 	}
+public static int getScreenWidth(Context context) {
+	 res = context.getResources();
+	 metrics = res.getDisplayMetrics();
+	int displayWidth = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
+			.max(metrics.widthPixels, metrics.heightPixels) : Math.min(
+			metrics.widthPixels, metrics.heightPixels);
+	return displayWidth;
+	
+}
+public static int getScreenHeight(Context context) {
+	 res = context.getResources();
+	 metrics = res.getDisplayMetrics();
+	
+	int displayHeight = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
+			.min(metrics.widthPixels, metrics.heightPixels) : Math.max(
+			metrics.widthPixels, metrics.heightPixels);
+	return displayHeight;
+}
 }

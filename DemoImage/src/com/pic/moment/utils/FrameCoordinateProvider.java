@@ -3,11 +3,13 @@ package com.pic.moment.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.pic.moment.beans.FrameCoordinete;
+
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
-public class FrameCoordinatrProvider {
+public class FrameCoordinateProvider {
 
     private static final int margin=10;
   

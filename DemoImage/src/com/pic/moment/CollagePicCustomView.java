@@ -47,23 +47,18 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 
 import com.pic.moment.MultiTouchController.MultiTouchObjectCanvas;
 import com.pic.moment.MultiTouchController.PointInfo;
 import com.pic.moment.MultiTouchController.PositionAndScale;
 
-public class PhotoSortrView extends View implements
-		MultiTouchObjectCanvas<Img> {
+public class CollagePicCustomView extends View implements
+		MultiTouchObjectCanvas<ImgCollage> {
 
-	// private static final int[] IMAGES = { R.drawable.m74hubble,
-	// R.drawable.catarina, R.drawable.tahiti, R.drawable.sunset,
-	// R.drawable.lake };
 	private static final String[] infoLines = { "Tap anywhere to add an item"};
 
-	public ArrayList<Img> mImages = new ArrayList<Img>();
-	//private static int counter = 0;
+	public ArrayList<ImgCollage> mImages = new ArrayList<ImgCollage>();
 	public static boolean saveclicked = false;
 	private Context context;
 	private Resources resources;
@@ -92,7 +87,7 @@ public class PhotoSortrView extends View implements
 	private Button delete;
 	// --
 
-	private MultiTouchController<Img> multiTouchController/* = new MultiTouchController<Img>(
+	private MultiTouchController<ImgCollage> multiTouchController/* = new MultiTouchController<Img>(
 			this)*/;
 
 	// --
@@ -120,36 +115,31 @@ public class PhotoSortrView extends View implements
 
 	// ---------------------------------------------------------------------------------------------------
 
-	public PhotoSortrView(Context context) {
+	public CollagePicCustomView(Context context) {
 		this(context, null);
 		this.context = context;
-		 multiTouchController = new MultiTouchController<Img>(
+		 multiTouchController = new MultiTouchController<ImgCollage>(
 					this,context);
 		 saveclicked=false;
 
 	}
 
-	public PhotoSortrView(Context context, AttributeSet attrs) {
+	public CollagePicCustomView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
-		 multiTouchController = new MultiTouchController<Img>(
+		 multiTouchController = new MultiTouchController<ImgCollage>(
 					this, context);
 		 saveclicked=false;
 	}
 
-	public PhotoSortrView(Context context, AttributeSet attrs, int defStyle) {
+	public CollagePicCustomView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		 multiTouchController = new MultiTouchController<Img>(
+		 multiTouchController = new MultiTouchController<ImgCollage>(
 					this, context);
 		init(context);
 	}
 
 	private void init(Context context) {
-		// Resources res = context.getResources();
-		/*
-		 * for (int i = 0; i < IMAGES.length; i++) mImages.add(new
-		 * Img(IMAGES[i], res));
-		 */
-
+		 
 		mLinePaintTouchPointCircle.setColor(Color.BLUE);
 		mLinePaintTouchPointCircle.setStrokeWidth(25);
 		mLinePaintTouchPointCircle.setTypeface(Typeface.DEFAULT_BOLD);
@@ -171,7 +161,7 @@ public class PhotoSortrView extends View implements
 		Resources res = context.getResources();
 		 for (int i = 0; i < IMAGES.length; i++)
 		 {
-			 Img img = new Img(IMAGES[i], res,isText);
+			 ImgCollage img = new ImgCollage(IMAGES[i], res,isText);
 			 
 		     mImages.add(img);
 		     img.load(res);
@@ -215,26 +205,23 @@ public class PhotoSortrView extends View implements
 
 		} else {
 			if (saveclicked) {
-				
-				for (int i = 0; i <  mImages.size(); i++)
-					if (mImages.get(i).isDeleted()) {
 
-					} else {
+				for (int i = 0; i < mImages.size(); i++)
+					if (!mImages.get(i).isDeleted())
+
 						mImages.get(i).draw(canvas);
-					}
 
 			} else {
-			
-				for (int i = 0; i <  mImages.size(); i++)
-				
-						mImages.get(i).draw(canvas);
-				
-					
+
+				for (int i = 0; i < mImages.size(); i++)
+
+					mImages.get(i).draw(canvas);
+
 			}
 
 		}
 		invalidate();
-		delete.bringToFront();
+		//delete.bringToFront();
 		
 
 	}
@@ -259,20 +246,15 @@ public class PhotoSortrView extends View implements
 	/** Pass touch events to the MT controller */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		/*if (touch_disabled) {
-			multiTouchController.onTouchEvent(event);
-			return false;
-		}else {*/
+
 			if (mImages.size() > 0) {
-				/*if (getDraggableObjectAtPoint(currTouchPoint)==null) {
-					Toast.makeText(context, "outside", 1).show();
-				}*/
+				
 				gestureDetector.onTouchEvent(event);
 				
 			}
 			
 		return multiTouchController.onTouchEvent(event);
-		//}
+		
 		
 
 	}
@@ -291,9 +273,9 @@ public class PhotoSortrView extends View implements
 			if (e1.getY() - e2.getY() > SWIPE_MIN_DISTANCE
 					&& Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
 				// delete.setBackgroundResource(R.drawable.cl_deleteopen);
-				final Img img = getDraggableObjectAtPoint(currTouchPoint);
+				final ImgCollage img = getDraggableObjectAtPoint(currTouchPoint);
 				if (img != null) {
-					// img.deleted = true;
+					img.setDeleted(true) ;
 					img.setMinX(img.getDisplayWidth() - 100);
 					img.setMaxX(img.getDisplayWidth());
 					img.setMinY(0);
@@ -331,11 +313,11 @@ public class PhotoSortrView extends View implements
 	 * Get the image that is under the single-touch point, or return null
 	 * (canceling the drag op) if none
 	 */
-	public Img getDraggableObjectAtPoint(PointInfo pt) {
+	public ImgCollage getDraggableObjectAtPoint(PointInfo pt) {
 		float x = pt.getX(), y = pt.getY();
 		int n = mImages.size();
 		for (int i = n - 1; i >= 0; i--) {
-			Img im = mImages.get(i);
+			ImgCollage im = mImages.get(i);
 			if (im.containsPoint(x, y))
 				
 				return im;
@@ -349,7 +331,7 @@ public class PhotoSortrView extends View implements
 	 * under the point (non-null is returned by getDraggableObjectAtPoint()) and
 	 * a drag operation is starting. Called with null when drag op ends.
 	 */
-	public void selectObject(Img img, PointInfo touchPoint) {
+	public void selectObject(ImgCollage img, PointInfo touchPoint) {
 		currTouchPoint.set(touchPoint);
 		if (img != null) {
 			// Move image to the top of the stack when selected
@@ -368,7 +350,7 @@ public class PhotoSortrView extends View implements
 	 * Get the current position and scale of the selected image. Called whenever
 	 * a drag starts or is reset.
 	 */
-	public void getPositionAndScale(Img img, PositionAndScale objPosAndScaleOut) {
+	public void getPositionAndScale(ImgCollage img, PositionAndScale objPosAndScaleOut) {
 		// FIXME affine-izem (and fix the fact that the anisotropic_scale part
 		// requires averaging the two scale factors)
 		objPosAndScaleOut.set(img.getCenterX(), img.getCenterY(),
@@ -380,7 +362,7 @@ public class PhotoSortrView extends View implements
 	}
 
 	/** Set the position and scale of the dragged/stretched image. */
-	public boolean setPositionAndScale(Img img,
+	public boolean setPositionAndScale(ImgCollage img,
 			PositionAndScale newImgPosAndScale, PointInfo touchPoint) {
 		currTouchPoint.set(touchPoint);
 		boolean ok = img.setPos(newImgPosAndScale, mUIMode, UI_MODE_ANISOTROPIC_SCALE);

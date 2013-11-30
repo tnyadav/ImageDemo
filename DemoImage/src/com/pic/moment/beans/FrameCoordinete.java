@@ -1,4 +1,4 @@
-package com.pic.moment.utils;
+package com.pic.moment.beans;
 
 public class FrameCoordinete {
 

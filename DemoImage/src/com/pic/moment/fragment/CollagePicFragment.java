@@ -13,23 +13,15 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
-import android.text.Layout;
-import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -43,28 +35,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.Toast;
 
+import com.pic.moment.CollagePicCustomView;
 import com.pic.moment.CustomMenu;
-import com.pic.moment.Img;
-import com.pic.moment.PhotoSortrView;
-import com.pic.moment.PopupProvider;
+import com.pic.moment.ImgCollage;
 import com.pic.moment.R;
 import com.pic.moment.ShareFragment;
-import com.pic.moment.PopupProvider.frame;
-import com.pic.moment.R.id;
-import com.pic.moment.R.layout;
-import com.pic.moment.R.style;
-import com.pic.moment.multipleselection.MultiPhotoSelectActivity;
-import com.pic.moment.utils.FrameCoordinatrProvider;
-import com.pic.moment.utils.FrameCoordinete;
+import com.pic.moment.activity.MultiPhotoSelectActivity;
+import com.pic.moment.beans.FrameCoordinete;
+import com.pic.moment.utils.FrameCoordinateProvider;
+import com.pic.moment.utils.PopupProvider;
 import com.pic.moment.utils.ScalingUtilities;
-import com.pic.moment.utils.Util;
+import com.pic.moment.utils.PopupProvider.frame;
 import com.pic.moment.utils.ScalingUtilities.ScalingLogic;
+import com.pic.moment.utils.Util;
 
-public class CollageFragment extends BaseFragment{
+public class CollagePicFragment extends BaseFragment{
 private View homeFragmentView;
-private PhotoSortrView photoSorter;
+private CollagePicCustomView photoSorter;
 private Button collageBack,collageDelete;
 private final int RESULT_LOAD_IMAGE = 001;
 private final int CAPTURE_IMAGE = 002;
@@ -76,7 +64,7 @@ private String temPath= Environment.getExternalStorageDirectory()+"/PicMomentsTe
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		homeFragmentView = inflater.inflate(R.layout.collagefragment, container, false);
+		homeFragmentView = inflater.inflate(R.layout.collagepicfragment, container, false);
 		SetContent();
 		
         return homeFragmentView;
@@ -193,7 +181,7 @@ collageBack.setOnClickListener(new OnClickListener() {
 collageDelete = (Button)homeFragmentView.findViewById(R.id.collageDelete);
 collageDelete.setClickable(false);
 frameLayout=(FrameLayout)homeFragmentView.findViewById(R.id.mainFrameContainer);
-photoSorter = new PhotoSortrView(picmomentActivity);
+photoSorter = new CollagePicCustomView(picmomentActivity);
 photoSorter.setDelete(collageDelete);
 photoSorter.setDialog(getDailog());
 if (picmomentActivity.mImages.size()!=0) {
@@ -359,14 +347,17 @@ frameLayout.addView(photoSorter);
  			@Override
  			public void onClick(View arg0) {
  				CustomMenu.hide();
+ 				 final List<ImgCollage> imgs=Util.filterList(photoSorter.mImages);
  				View	navigationViewContainer =PopupProvider.getFrame(picmomentActivity, new frame() {
+ 					
  					
  					@Override
  					public void frameClicked(int index) {
- 					List<FrameCoordinete> frameCoordinetes=	FrameCoordinatrProvider.getFremeCoordinate(picmomentActivity.getResources(),index);
- 				
- 					for (int i = 0; i < Math.min(frameCoordinetes.size(),photoSorter.mImages.size()); i++) {
-						Img img = photoSorter.mImages.get(i);
+ 						
+ 					List<FrameCoordinete> frameCoordinetes=	FrameCoordinateProvider.getFremeCoordinate(picmomentActivity.getResources(),index);
+ 				   
+ 					for (int i = 0; i < Math.min(frameCoordinetes.size(),imgs.size()); i++) {
+						ImgCollage img = photoSorter.mImages.get(i);
 						FrameCoordinete frameCoordinete=frameCoordinetes.get(i);
 						img.setMinX(frameCoordinete.getMinX());
 						img.setMaxX(frameCoordinete.getMaxX());
@@ -378,7 +369,7 @@ frameLayout.addView(photoSorter);
 					}
  					photoSorter.invalidate();
  					}
- 				},onClickListener,photoSorter.mImages.size());
+ 				},onClickListener,imgs.size());
  				CustomMenu.show(picmomentActivity,navigationViewContainer);
  				
  			}
@@ -398,11 +389,28 @@ frameLayout.addView(photoSorter);
  			
  			@Override
  			public void onClick(View arg0) {
- 				photoSorter.saveclicked=true;
+ 				photoSorter.saveclicked=true; 
  				photoSorter.setDrawingCacheEnabled(true);
-				Bitmap b = Bitmap.createBitmap(photoSorter.getWidth(),
-						photoSorter.getHeight(), Bitmap.Config.ARGB_8888);
-				Fragment shareFragment=new ShareFragment();
+				/*Bitmap b = Bitmap.createBitmap(photoSorter.getWidth(),
+						photoSorter.getHeight(), Bitmap.Config.ARGB_8888);*/
+ 			/*	try {
+ 					File file = new File(temPath);
+ 			            if (!file.exists())
+ 			            {
+ 			            	file.mkdirs();
+ 			            }
+ 			            
+ 			        String time=""+System.currentTimeMillis();    
+
+ 			       Util.getBitmapFromView(photoSorter).compress(CompressFormat.JPEG, 100, new FileOutputStream(temPath+"/"+time+".jpeg"));
+ 					Toast.makeText(picmomentActivity, "saved in "+temPath+"/"+time+".jpeg", 1).show();
+ 				} catch (Exception e) {
+ 					// TODO Auto-generated catch block
+ 					e.printStackTrace();
+ 					Log.e("t", e.toString());
+ 					Toast.makeText(picmomentActivity, "faild to save", 1).show();
+ 				}*/
+ 				ShareFragment shareFragment=new ShareFragment();
 				Bundle bundle=new Bundle();
 				bundle.putParcelable("image", Util.getBitmapFromView(photoSorter));
 				shareFragment.setArguments(bundle);
@@ -552,7 +560,8 @@ frameLayout.addView(photoSorter);
 								showBottomBar();
 							
 							}else {
-								Drawable drawable=getResources().getDrawable(PopupProvider.emocionsbig[index]);
+							   
+								  Drawable drawable=getResources().getDrawable(PopupProvider.emocionsbig[index]);
 								  photoSorter.loadImages(picmomentActivity,new Drawable[] {drawable},false);
 								
 							}
@@ -577,4 +586,33 @@ frameLayout.addView(photoSorter);
 			window.setAttributes(wlp);
 			return dialog;
 		}
+
+	/*private OnClickListener dialogUseCamera = new OnClickListener() {
+
+		@Override
+		public void onClick(View arg0) {
+
+		}
+	};
+	private OnClickListener dialogAddPhoto = new OnClickListener() {
+
+		@Override
+		public void onClick(View arg0) {
+
+		}
+	};
+	private OnClickListener dialogAddText = new OnClickListener() {
+
+		@Override
+		public void onClick(View arg0) {
+
+		}
+	};
+	private OnClickListener dialogAddSticker = new OnClickListener() {
+
+		@Override
+		public void onClick(View arg0) {
+
+		}
+	};*/
 }

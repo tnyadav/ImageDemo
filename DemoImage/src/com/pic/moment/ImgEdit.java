@@ -1,18 +1,26 @@
 package com.pic.moment;
 
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.PorterDuff.Mode;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.util.DisplayMetrics;
 
 import com.pic.moment.MultiTouchController.PositionAndScale;
 
-public class Img {
+public class ImgEdit {
+
+
+
+	@Override
+	public String toString() {
+		return "ImgEdit [width=" + width + ", height=" + height
+				+ ", displayWidth=" + displayWidth + ", displayHeight="
+				+ displayHeight + ", centerX=" + centerX + ", centerY="
+				+ centerY + ", scaleX=" + scaleX + ", scaleY=" + scaleY
+				+ ", angle=" + angle + ", minX=" + minX + ", maxX=" + maxX
+				+ ", minY=" + minY + ", maxY=" + maxY + "]";
+	}
 
 	private int resId;
    
@@ -21,9 +29,15 @@ public class Img {
 	private Resources resources;
 	private boolean deleted = false;
 	private boolean bouncing = false;
-	private boolean isText;
-	private boolean isCollege=false;
-	
+	private boolean isImage;
+	public boolean isImage() {
+		return isImage;
+	}
+
+	public void setImage(boolean isImage) {
+		this.isImage = isImage;
+	}
+
 	private int width, height;
 	private int displayWidth;
 	private int displayHeight;
@@ -40,7 +54,7 @@ public class Img {
 	private float minY;
 	private float maxY;
 	
-	private static final float SCREEN_MARGIN = 100;
+	private static final float SCREEN_MARGIN = 0;
 
 	 public int getResId() {
 			return resId;
@@ -82,13 +96,7 @@ public class Img {
 			this.bouncing = bouncing;
 		}
 
-		public boolean isText() {
-			return isText;
-		}
-
-		public void setText(boolean isText) {
-			this.isText = isText;
-		}
+		
 
 		public int getWidth() {
 			return width;
@@ -195,60 +203,28 @@ public class Img {
 		}
 	
 	
-	
-	public boolean isCollege() {
-			return isCollege;
-		}
 
-		public void setCollege(boolean isCollege) {
-			this.isCollege = isCollege;
-		}
-
-	public Img(Drawable resId, Resources res, boolean isText) {
+	public ImgEdit(Drawable resId, Resources res,boolean isImage) {
 		this.drawable = resId;
-		this.isText = isText;
+		this.isImage=isImage;
         this.resources = res;
 		this.deleted = false;
-		getMetrics(res);
+		
 	}
 
-	private void getMetrics(Resources res) {
-		DisplayMetrics metrics = res.getDisplayMetrics();
-		// The DisplayMetrics don't seem to always be updated on screen
-		// rotate, so we hard code a portrait
-		// screen orientation for the non-rotated screen here...
-		// this.displayWidth = metrics.widthPixels;
-		// this.displayHeight = metrics.heightPixels;
-		this.displayWidth = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
-				.max(metrics.widthPixels, metrics.heightPixels) : Math.min(
-				metrics.widthPixels, metrics.heightPixels);
-		this.displayHeight = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
-				.min(metrics.widthPixels, metrics.heightPixels) : Math.max(
-				metrics.widthPixels, metrics.heightPixels);
-	}
+	
 
 	/** Called by activity's onResume() method to load the images */
-	public void load(Resources res) {
-		getMetrics(res);
+	public void load(Resources res,Rect rect) {
+		this.displayWidth=rect.right;
+		this.displayHeight=rect.bottom;
 		this.width = drawable.getIntrinsicWidth();
 		this.height = drawable.getIntrinsicHeight();
 
 		float cx, cy, sx, sy,sc;
 		cx = (float) /* (Math.random() * */(displayWidth) / 2;
 		cy = (float) /* (Math.random() * */(displayHeight) / 2;
-
-		/*float sc = (float) (Math.max(displayWidth, displayHeight)
-				/ (float) Math.max(width, height) * Math.random() * 0.7 + 0.6);
-		
-		float sc = (float) ((float)  Math.random() * 0.7 + 0.6);*/
-
-		sx = sy = sc=0.7f;
-		if (isText) {
-			setPos(cx, cy, 1, 1, 0);
-		} else {
-			setPos(cx, cy, sx, sy, (float) (Math.random() * 0.5f + 0.0f));
-		}
-
+		setPos(cx, cy,0.98f,0.98f,0);
 	}
 
 	/**
@@ -277,8 +253,12 @@ public class Img {
 	private boolean setPos(float centerX, float centerY, float scaleX,
 			float scaleY, float angle) {
 		float ws = (width / 2) * scaleX, hs = (height / 2) * scaleY;
-		float newMinX = centerX - ws, newMinY = centerY - hs, newMaxX = centerX
-				+ ws, newMaxY = centerY + hs;
+	
+		float   newMinX = centerX - ws,
+				newMinY = centerY - hs, 
+				newMaxX = centerX+ ws, 
+				newMaxY = centerY + hs;
+	
 		if (newMinX > displayWidth - SCREEN_MARGIN || newMaxX < SCREEN_MARGIN
 				|| newMinY > displayHeight - SCREEN_MARGIN
 				|| newMaxY < SCREEN_MARGIN)
@@ -304,45 +284,40 @@ public class Img {
 
 	public void draw(Canvas canvas) {
 		canvas.save();
+		
+		
+		
 		float dx = (maxX + minX) / 2;
 		float dy = (maxY + minY) / 2;
 		drawable.setBounds((int) minX, (int) minY, (int) maxX, (int) maxY);
-		if (!isCollege) {
+		if (maxX-minX!=100 && maxY-minY!=100&&!bouncing) {
+			setDeleted(false);
+		}
+		
+		if (!isImage) {
 			canvas.translate(dx, dy);
 			canvas.rotate(angle * 180.0f / (float) Math.PI);
 			canvas.translate(-dx, -dy);
 		}
-		//drawable.setColorFilter(Color.parseColor("#41EAA8"), Mode.MULTIPLY);
-
 		
-
-		float[] matrix = { 0, 0, 0, 0.1f, 0, // red
-				0,  0.1f, 0, 0, 0, // green
-				0, 0, 0, 0.1f, 0, // blue
-				0.1f, 0, 0, 0, 0 // alpha
-		};
-	//	 drawable.setColorFilter(new ColorMatrixColorFilter(matrix));
-
+	
+		
 		drawable.draw(canvas);
 
 		canvas.restore();
 
 	}
 
-	/*
-	 * int randomWithRange(int min, int max) { int range = (max - min) + 1;
-	 * return (int)(Math.random() * range) + min; }
-	 */
-
+	
 	public void bounce() {
+
 		if (!bouncing) {
 			bouncing = true;
 			minX = minX - 10;
 			maxX = maxX + 10;
 			minY = minY - 10;
 			maxY = maxY + 10;
-
-			// multiTouchController.selectedObject=null;
+            
 			new Handler().postDelayed(new Runnable() {
 
 				@Override
@@ -352,10 +327,12 @@ public class Img {
 					minY = minY + 10;
 					maxY = maxY - 10;
 					bouncing = false;
+				
 
 				}
 			}, 200);
 		}
 
+	
 	}
 }

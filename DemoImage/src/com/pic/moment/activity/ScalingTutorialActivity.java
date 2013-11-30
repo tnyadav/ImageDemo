@@ -25,20 +25,18 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.pic.moment;
-
-import com.pic.moment.utils.ScalingUtilities;
-import com.pic.moment.utils.ScalingUtilities.ScalingLogic;
+package com.pic.moment.activity;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.pic.moment.utils.ScalingUtilities;
+import com.pic.moment.utils.ScalingUtilities.ScalingLogic;
 
 /**
  * Activity implementation for decoding and scaling tutorial

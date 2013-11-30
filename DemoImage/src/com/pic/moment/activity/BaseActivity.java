@@ -1,4 +1,4 @@
-package com.pic.moment.multipleselection;
+package com.pic.moment.activity;
 
 import android.app.Activity;
 

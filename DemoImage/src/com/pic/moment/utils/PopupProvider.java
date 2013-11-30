@@ -1,4 +1,4 @@
-package com.pic.moment;
+package com.pic.moment.utils;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,28 +7,33 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.pic.moment.beans.FrameIteme;
+import com.pic.moment.R;
+import com.pic.moment.R.drawable;
+import com.pic.moment.R.id;
+import com.pic.moment.R.layout;
+import com.pic.moment.activity.PicmomentActivity;
+import com.pic.moment.beans.FrameInfo;
 
 public class PopupProvider {
 	private static View view;
 
-	private static FrameIteme frameItemes[] = {
-			new FrameIteme(1, R.drawable.frame_0_cv),
-			new FrameIteme(2, R.drawable.frame_1_cv),
-			new FrameIteme(2, R.drawable.frame_2_cv),
-			new FrameIteme(2, R.drawable.frame_3_cv),
-			new FrameIteme(3, R.drawable.frame_4_cv),
-			new FrameIteme(3, R.drawable.frame_5_cv),
-			new FrameIteme(3, R.drawable.frame_6_cv),
-			new FrameIteme(3, R.drawable.frame_7_cv),
-			new FrameIteme(3, R.drawable.frame_8_cv),
-			new FrameIteme(3, R.drawable.frame_9_cv),
-			new FrameIteme(4, R.drawable.frame_10_cv),
-			new FrameIteme(4, R.drawable.frame_11_cv),
-			new FrameIteme(5, R.drawable.frame_12_cv),
-			new FrameIteme(5, R.drawable.frame_13_cv),
-			new FrameIteme(6, R.drawable.frame_14_cv),
-			new FrameIteme(9, R.drawable.frame_15_cv) };
+	private static FrameInfo frameItemes[] = {
+			new FrameInfo(1, R.drawable.frame_0_cv),
+			new FrameInfo(2, R.drawable.frame_1_cv),
+			new FrameInfo(2, R.drawable.frame_2_cv),
+			new FrameInfo(2, R.drawable.frame_3_cv),
+			new FrameInfo(3, R.drawable.frame_4_cv),
+			new FrameInfo(3, R.drawable.frame_5_cv),
+			new FrameInfo(3, R.drawable.frame_6_cv),
+			new FrameInfo(3, R.drawable.frame_7_cv),
+			new FrameInfo(3, R.drawable.frame_8_cv),
+			new FrameInfo(3, R.drawable.frame_9_cv),
+			new FrameInfo(4, R.drawable.frame_10_cv),
+			new FrameInfo(4, R.drawable.frame_11_cv),
+			new FrameInfo(5, R.drawable.frame_12_cv),
+			new FrameInfo(5, R.drawable.frame_13_cv),
+			new FrameInfo(6, R.drawable.frame_14_cv),
+			new FrameInfo(9, R.drawable.frame_15_cv) };
 	private static int[] emocions = { R.drawable.emoticon2_1_tn,
 			R.drawable.emoticon2_2_tn, R.drawable.emoticon2_3_tn,
 			R.drawable.emoticon2_4_tn, R.drawable.emoticon2_5_tn,
@@ -64,7 +69,7 @@ public class PopupProvider {
 				.findViewById(R.id.popupFrameFrams);
 		for (int i = 0; i < frameItemes.length; i++) {
 			final int tempI = i;
-			FrameIteme frameIteme = frameItemes[tempI];
+			FrameInfo frameIteme = frameItemes[tempI];
 			if (frameIteme.getCount() >= count) {
 				ImageView imageView = new ImageView(picmomentActivity);
 				imageView.setImageResource(frameIteme.getId());

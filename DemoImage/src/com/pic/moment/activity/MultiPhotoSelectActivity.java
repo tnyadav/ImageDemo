@@ -1,4 +1,4 @@
-package com.pic.moment.multipleselection;
+package com.pic.moment.activity;
 
 import java.util.ArrayList;
 
@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +17,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
@@ -37,7 +36,7 @@ public class MultiPhotoSelectActivity extends BaseActivity {
 	private ImageAdapter imageAdapter;
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) { 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ac_image_grid);
 

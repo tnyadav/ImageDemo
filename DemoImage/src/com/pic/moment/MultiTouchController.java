@@ -432,7 +432,7 @@ boolean b;
 			if (!mCurrPt.isDown()) {
 				
 				if (System.currentTimeMillis()-touchTime<400) {
-					((Img) selectedObject).bounce();
+					((ImgCollage) selectedObject).bounce();
 				}
 				
 				// First finger was released, stop dragging
