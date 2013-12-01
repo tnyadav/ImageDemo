@@ -1,5 +1,7 @@
 package com.pic.moment.utils;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,15 +11,21 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.pic.moment.ImgCollage;
 
 public class Util {
+	
+	public static final String temPath= Environment.getExternalStorageDirectory()+"/PicMomentsTemp";
 	
 	private static Resources res ;
 	private static DisplayMetrics metrics;
@@ -90,5 +98,43 @@ public static int getScreenHeight(Context context) {
 			.min(metrics.widthPixels, metrics.heightPixels) : Math.max(
 			metrics.widthPixels, metrics.heightPixels);
 	return displayHeight;
+}
+public static void saveImage(Context context,View view,String fileName) {
+	Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(),
+			view.getHeight(), Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(returnedBitmap);
+		Drawable bgDrawable = view.getBackground();
+		if (bgDrawable != null)
+			bgDrawable.draw(canvas);
+		else
+			canvas.drawColor(Color.WHITE);
+		view.draw(canvas);
+
+		try {
+			File file = new File(temPath);
+	            if (!file.exists())
+	            {
+	            	file.mkdirs();
+	            }
+	            
+	       
+	       returnedBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(temPath+"/"+fileName+".jpeg"));
+	       Toast.makeText(context, "saved in "+temPath+"/"+fileName+".jpeg", 1).show();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Log.e("t", e.toString());
+			Toast.makeText(context, "faild to save", 1).show();
+		}
+
+		returnedBitmap.recycle();
+}
+class SaveFileTask extends AsyncTask<Void, Void, Boolean>{
+
+	@Override
+	protected Boolean doInBackground(Void... arg0) {
+	
+		return null;
+	}
 }
 }

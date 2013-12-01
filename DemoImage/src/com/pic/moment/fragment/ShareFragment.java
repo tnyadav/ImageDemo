@@ -44,8 +44,8 @@ private String temPath= Environment.getExternalStorageDirectory()+"/PicMomentsTe
 	}
 private void SetContent() {
 	imageView=(ImageView)shareFragment.findViewById(R.id.shareImage);
-	bitmap=(Bitmap)(getArguments().getParcelable("image"));
-	imageView.setImageBitmap(bitmap);
+	//bitmap=(Bitmap)(getArguments().getParcelable("image"));
+//	imageView.setImageBitmap(bitmap);
 	shareBack=(Button)shareFragment.findViewById(R.id.shareBack);
 	shareBack.setOnClickListener(new OnClickListener() {
 		

@@ -50,7 +50,7 @@ import com.pic.moment.utils.Util;
 
 public class EditPicFragment extends BaseFragment{
 private View homeFragmentView;
-private Button collageBack,collageDelete,editAdd,collageShare;
+private Button editBack,editReset,editCurve,editFrame,editAdd,editEffect,editShare;
 private final int RESULT_LOAD_IMAGE = 001;
 private final int CAPTURE_IMAGE = 002;
 private boolean isImageMode=false;
@@ -73,15 +73,34 @@ private String temPath= Environment.getExternalStorageDirectory()+"/PicMomentsTe
 	}
 private void SetContent() {
 linearLayout=(LinearLayout)homeFragmentView.findViewById(R.id.editDataContainer);
-linearLayout.setVisibility(View.GONE);
-linearLayout.addView(PopupProvider.getBlands(picmomentActivity, new frame() {
+
+editCurve=(Button)homeFragmentView.findViewById(R.id.editCurve);
+editCurve.setOnClickListener(new OnClickListener() {
 	
 	@Override
-	public void frameClicked(int index) {
+	public void onClick(View arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-}));
+});
+
+editFrame=(Button)homeFragmentView.findViewById(R.id.editFrame);
+editFrame.setOnClickListener(new OnClickListener() {
+	
+	@Override
+	public void onClick(View arg0) {
+	linearLayout.removeAllViews();
+	View view=PopupProvider.getBlands(picmomentActivity, new frame() {
+		
+		@Override
+		public void frameClicked(int index) {
+			
+			
+		}
+	});
+	linearLayout.addView(view);
+	}
+});
 editAdd = (Button)homeFragmentView.findViewById(R.id.editAdd);
 editAdd.setOnClickListener(new OnClickListener() {
 	
@@ -183,37 +202,34 @@ editAdd.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
+				dialog.dismiss();
 				linearLayout.setVisibility(View.VISIBLE);
 				addStrikerView();
-			/*	
-				View	navigationViewContainer = PopupProvider.getEmocione(picmomentActivity, new frame() {
-					
-					@Override
-					public void frameClicked(int index) {
-						if (index==9) {
-							
-							
-						
-						}else {
-							Rect rect = new Rect();
-							rect.right=Util.getScreenWidth(picmomentActivity);
-							rect.bottom=Util.getScreenHeight(picmomentActivity);
-							Bitmap bitmap=ScalingUtilities.decodeResource(getResources(), PopupProvider.emocionsbig[index],editPicCustomView.getWidth(),
-	                      			editPicCustomView.getHeight(), ScalingLogic.FIT);
-							bitmap=ScalingUtilities.createScaledBitmap(bitmap, editPicCustomView.getWidth(),editPicCustomView.getHeight(), ScalingLogic.FIT);
-							//Drawable drawable=getResources().getDrawable(PopupProvider.emocionsbig[index]);
-							editPicCustomView.loadImages(picmomentActivity,new BitmapDrawable(getResources(),bitmap) ,rect,false);
-							
-						}
-						
-					}
-				});	*/
 			
 			}
 		});
 		dialog.show();
 		
 		}
+});
+
+editEffect=(Button)homeFragmentView.findViewById(R.id.editEffect);
+editEffect.setOnClickListener(new OnClickListener() {
+	
+	@Override
+	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+});
+editShare=(Button)homeFragmentView.findViewById(R.id.editShare);
+editShare.setOnClickListener(new OnClickListener() {
+	
+	@Override
+	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 });
 
 mainContainer=(FrameLayout)homeFragmentView.findViewById(R.id.mainFrameContainer);
@@ -259,10 +275,7 @@ mainContainer.addView(editPicCustomView);
         	linearLayout.setVisibility(View.VISIBLE);
             Uri selectedImage = data.getData();
             new LoadImagesFromSDCard().execute(selectedImage);
-            
-           
-             
-         }
+        }
         if(requestCode==CAPTURE_IMAGE && resultCode==Activity.RESULT_OK )
         {
         	linearLayout.setVisibility(View.VISIBLE);
@@ -447,22 +460,34 @@ mainContainer.addView(editPicCustomView);
 		Rect rect = new Rect();
 		rect.right=Util.getScreenWidth(picmomentActivity);
 		rect.bottom=Util.getScreenHeight(picmomentActivity);
+		Bitmap bitmap;
 			
 		switch (emoticonType) {
 		case 0:
-
+			 bitmap=ScalingUtilities.decodeResource(getResources(), PopupProvider.makeupBig[index],editPicCustomView.getWidth(),
+		      			editPicCustomView.getHeight(), ScalingLogic.FIT);
+				bitmap=ScalingUtilities.createScaledBitmap(bitmap, editPicCustomView.getWidth(),editPicCustomView.getHeight(), ScalingLogic.FIT);
+				editPicCustomView.loadImages(picmomentActivity,new BitmapDrawable(getResources(),bitmap) ,rect,false);
+		
 			break;
 		case 1:
-
+			 bitmap=ScalingUtilities.decodeResource(getResources(), PopupProvider.textBig[index],editPicCustomView.getWidth(),
+		      			editPicCustomView.getHeight(), ScalingLogic.FIT);
+				bitmap=ScalingUtilities.createScaledBitmap(bitmap, editPicCustomView.getWidth(),editPicCustomView.getHeight(), ScalingLogic.FIT);
+				editPicCustomView.loadImages(picmomentActivity,new BitmapDrawable(getResources(),bitmap) ,rect,false);
 			break;
 		case 2:
-			Bitmap bitmap=ScalingUtilities.decodeResource(getResources(), PopupProvider.emocionsbig[index],editPicCustomView.getWidth(),
+			 bitmap=ScalingUtilities.decodeResource(getResources(), PopupProvider.emocionsbig[index],editPicCustomView.getWidth(),
 	      			editPicCustomView.getHeight(), ScalingLogic.FIT);
 			bitmap=ScalingUtilities.createScaledBitmap(bitmap, editPicCustomView.getWidth(),editPicCustomView.getHeight(), ScalingLogic.FIT);
 			editPicCustomView.loadImages(picmomentActivity,new BitmapDrawable(getResources(),bitmap) ,rect,false);
 			break;
 		case 3:
-		
+			 bitmap=ScalingUtilities.decodeResource(getResources(), PopupProvider.lightItemBig[index],editPicCustomView.getWidth(),
+	      			editPicCustomView.getHeight(), ScalingLogic.FIT);
+			bitmap=ScalingUtilities.createScaledBitmap(bitmap, editPicCustomView.getWidth(),editPicCustomView.getHeight(), ScalingLogic.FIT);
+			editPicCustomView.loadImages(picmomentActivity,new BitmapDrawable(getResources(),bitmap) ,rect,false);
+
 			break;
 		default:
 			break;

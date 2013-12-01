@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -48,9 +49,11 @@ import com.pic.moment.CustomMenu;
 import com.pic.moment.ImgCollage;
 import com.pic.moment.R;
 import com.pic.moment.activity.MultiPhotoSelectActivity;
+import com.pic.moment.activity.PicmomentActivity;
 import com.pic.moment.beans.FrameCoordinete;
 import com.pic.moment.utils.FrameCoordinateProvider;
 import com.pic.moment.utils.PopupProvider;
+import com.pic.moment.utils.SaveFileTask;
 import com.pic.moment.utils.ScalingUtilities;
 import com.pic.moment.utils.PopupProvider.frame;
 import com.pic.moment.utils.PopupProvider.frameChild;
@@ -67,7 +70,8 @@ private FrameLayout frameLayout;
 Dialog addDialog;
 Uri imageUri= null;
 boolean isPresent=false;
-private String temPath= Environment.getExternalStorageDirectory()+"/PicMomentsTemp";
+protected String fileName;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -396,64 +400,51 @@ frameLayout.addView(photoSorter);
  		collageShButton.setOnClickListener(new OnClickListener() {
  			
  			@Override
- 			public void onClick(View arg0) {
- 				Bitmap returnedBitmap = Bitmap.createBitmap(photoSorter.getWidth(),
- 						photoSorter.getHeight(), Bitmap.Config.ARGB_8888);
- 				Canvas canvas = new Canvas(returnedBitmap);
- 				Drawable bgDrawable = photoSorter.getBackground();
- 				if (bgDrawable != null)
- 					bgDrawable.draw(canvas);
- 				else
- 					canvas.drawColor(Color.WHITE);
- 				photoSorter.draw(canvas);
+			public void onClick(View arg0) {
+ 				fileName = "PicMoment" + System.currentTimeMillis();
+ 				final ProgressDialog Dialog = new ProgressDialog(picmomentActivity);
+ 				  Dialog.setMessage("Saving File");
+ 				  Dialog.show();
+ 			/*	new Handler().post(new Runnable() {
+					
+					@Override
+					public void run() {*/
+						Bitmap returnedBitmap = Bitmap.createBitmap(photoSorter.getWidth(),
+		 						photoSorter.getHeight(), Bitmap.Config.ARGB_8888);
+		 					Canvas canvas = new Canvas(returnedBitmap);
+		 					Drawable bgDrawable = photoSorter.getBackground();
+		 					if (bgDrawable != null)
+		 						bgDrawable.draw(canvas);
+		 					else
+		 						canvas.drawColor(Color.WHITE);
+		 					photoSorter.draw(canvas);
+		 			        try {
+		 						returnedBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(Util.temPath+"/"+fileName+".jpeg"));
+		 						Toast.makeText(picmomentActivity, "saved in "+Util.temPath+"/"+fileName+".jpeg", 1).show();
+		 						 ShareFragment shareFragment=new ShareFragment();
+		 						 Bundle bundle=new Bundle();
+		 							bundle.putString("filename", fileName);
+		 							shareFragment.setArguments(bundle);
+		 							Dialog.dismiss();
+		 							picmomentActivity.pushFragments(shareFragment, true, true);
+		 			        
+		 			        
+		 			        } catch (FileNotFoundException e) {
+		 						// TODO Auto-generated catch block
+		 						e.printStackTrace();
+		 						Dialog.dismiss();
+		 					
+		 					}
+						
+			/*		}
+				});
+ 				*/
+ 				    
 
- 				try {
- 					File file = new File(temPath);
- 			            if (!file.exists())
- 			            {
- 			            	file.mkdirs();
- 			            }
- 			            
- 			        String time=""+System.currentTimeMillis();    
-
- 			       returnedBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(temPath+"/"+time+".jpeg"));
- 			       Toast.makeText(picmomentActivity, "saved in "+temPath+"/"+time+".jpeg", 1).show();
- 				} catch (Exception e) {
- 					// TODO Auto-generated catch block
- 					e.printStackTrace();
- 					Log.e("t", e.toString());
- 					Toast.makeText(picmomentActivity, "faild to save", 1).show();
- 				}
-
- 				returnedBitmap.recycle();
- /*				photoSorter.saveclicked=true; 
- 				photoSorter.setDrawingCacheEnabled(true);
-				Bitmap b = Bitmap.createBitmap(photoSorter.getWidth(),
-						photoSorter.getHeight(), Bitmap.Config.ARGB_8888);
- 				try {
- 					File file = new File(temPath);
- 			            if (!file.exists())
- 			            {
- 			            	file.mkdirs();
- 			            }
- 			            
- 			        String time=""+System.currentTimeMillis();    
-
- 			       Util.getBitmapFromView(photoSorter).compress(CompressFormat.JPEG, 100, new FileOutputStream(temPath+"/"+time+".jpeg"));
- 					Toast.makeText(picmomentActivity, "saved in "+temPath+"/"+time+".jpeg", 1).show();
- 				} catch (Exception e) {
- 					// TODO Auto-generated catch block
- 					e.printStackTrace();
- 					Log.e("t", e.toString());
- 					Toast.makeText(picmomentActivity, "faild to save", 1).show();
- 				}
- 				ShareFragment shareFragment=new ShareFragment();
-				Bundle bundle=new Bundle();
-				bundle.putParcelable("image", Util.getBitmapFromView(photoSorter));
-				shareFragment.setArguments(bundle);
-				picmomentActivity.pushFragments(shareFragment, true, true);*/
- 			}
+			}
  		});
+ 		
+ 		
  		if (photoSorter.mImages.size()==0) {
 			collageFrame.setVisibility(View.GONE);
 			collageShButton.setVisibility(View.GONE);
@@ -473,26 +464,7 @@ frameLayout.addView(photoSorter);
 				
 			}
 		};
-		
-		/*private Drawable makeMarker(String text, int textSize, int textColor){
-			Bitmap largeWhiteBitmap = Bitmap.createBitmap(textSize * text.length(), textSize*2 , Bitmap.Config.ARGB_8888);
-
-		    Canvas canvas = new Canvas(largeWhiteBitmap);
-
-		    canvas.drawColor(Color.BLACK);
-
-		    Paint paint = new Paint();
-
-		    paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
-		    paint.setTextSize(textSize);
-		    paint.setColor(textColor);
-		    paint.setTextAlign(Paint.Align.CENTER);
-		    paint.setAntiAlias(true);
-		    canvas.drawText(text, 10, textSize, paint);
-		    Drawable drawable=new BitmapDrawable(picmomentActivity.getResources(), largeWhiteBitmap);
-		    return drawable;
-		}*/
-		
+	
 		/**
 		 *dialog for addding image/text customview
 		 */
@@ -607,34 +579,6 @@ frameLayout.addView(photoSorter);
 			return dialog;
 		}
 
-	/*private OnClickListener dialogUseCamera = new OnClickListener() {
-
-		@Override
-		public void onClick(View arg0) {
-
-		}
-	};
-	private OnClickListener dialogAddPhoto = new OnClickListener() {
-
-		@Override
-		public void onClick(View arg0) {
-
-		}
-	};
-	private OnClickListener dialogAddText = new OnClickListener() {
-
-		@Override
-		public void onClick(View arg0) {
-
-		}
-	};
-	private OnClickListener dialogAddSticker = new OnClickListener() {
-
-		@Override
-		public void onClick(View arg0) {
-
-		}
-	};*/
 	private void addStrikerView() {
 
 		// **** triker
@@ -677,28 +621,87 @@ frameLayout.addView(photoSorter);
 	}
 private void addStrikerToView(int emoticonType, int index) {
 		
-		Rect rect = new Rect();
-		rect.right=Util.getScreenWidth(picmomentActivity);
-		rect.bottom=Util.getScreenHeight(picmomentActivity);
-			
+	
+		 Drawable drawable;	
 		switch (emoticonType) {
 		case 0:
-
+			 drawable=getResources().getDrawable(PopupProvider.makeupBig[index]);
+			  photoSorter.loadImages(picmomentActivity,new Drawable[] {drawable},false);
 			break;
 		case 1:
-
+			 drawable=getResources().getDrawable(PopupProvider.textBig[index]);
+			  photoSorter.loadImages(picmomentActivity,new Drawable[] {drawable},false);
 			break;
 		case 2:
 		
-		 Drawable drawable=getResources().getDrawable(PopupProvider.emocionsbig[index]);
+		  drawable=getResources().getDrawable(PopupProvider.emocionsbig[index]);
 								  photoSorter.loadImages(picmomentActivity,new Drawable[] {drawable},false);
 		
 				break;
 		case 3:
-		
+		  drawable=getResources().getDrawable(PopupProvider.lightItemBig[index]);
+			  photoSorter.loadImages(picmomentActivity,new Drawable[] {drawable},false);
 			break;
 		default:
 			break;
 		}
 	}
+class SaveFile extends  AsyncTask<Void, Void, Boolean> {
+
+
+private ProgressDialog Dialog;
+
+	@Override
+	protected void onPreExecute() {
+		// TODO Auto-generated method stub
+		super.onPreExecute();
+		  Dialog = new ProgressDialog(picmomentActivity);
+		  Dialog.setMessage("Saving File");
+		  Dialog.show();
+		 
+	}
+	@Override
+	protected Boolean doInBackground(Void... arg0) {
+   	Bitmap returnedBitmap = Bitmap.createBitmap(photoSorter.getWidth(),
+			photoSorter.getHeight(), Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(returnedBitmap);
+		Drawable bgDrawable = photoSorter.getBackground();
+		if (bgDrawable != null)
+			bgDrawable.draw(canvas);
+		else
+			canvas.drawColor(Color.WHITE);
+		photoSorter.draw(canvas);
+        try {
+			returnedBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(Util.temPath+"/"+fileName+".jpeg"));
+		return true;
+        } catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	    
+		
+		
+		
+	
+	}
+
+	@Override
+	protected void onPostExecute(Boolean result) {
+		// TODO Auto-generated method stub
+		super.onPostExecute(result);
+		Dialog.dismiss();
+		if (result) {
+			Toast.makeText(picmomentActivity, "saved in "+Util.temPath+"/"+fileName+".jpeg", 1).show();
+			 ShareFragment shareFragment=new ShareFragment();
+			 Bundle bundle=new Bundle();
+				bundle.putString("filename", fileName);
+				shareFragment.setArguments(bundle);
+				picmomentActivity.pushFragments(shareFragment, true, true);
+		}
+		
+	}
+
+
+}
 }

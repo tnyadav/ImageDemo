@@ -208,7 +208,7 @@ public class EditPicCustomView extends View implements
 
 		}
 		invalidate();
-		//delete.bringToFront();
+		delete.bringToFront();
 		
 
 	}

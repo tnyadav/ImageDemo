@@ -1,27 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/emoticonParrentButton"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-         />
+         android:layout_gravity="center"
+        android:background="#DFECFA"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/emoticonParrentButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:layout_gravity="center"
+            android:layout_margin="2dp" />
+
+    </LinearLayout>
 
     <HorizontalScrollView
+        android:id="@+id/horizontalScrollView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:scrollbars="none"
        
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:scrollbars="none">
-
+        android:layout_gravity="center_vertical"
+       >
+<!--  android:scrollbarFadeDuration="10" -->
         <LinearLayout
-             android:id="@+id/emoticonChildContainer"
+            android:id="@+id/emoticonChildContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal" >
         </LinearLayout>
-    </HorizontalScrollView>
-
+   </HorizontalScrollView>
 </LinearLayout>

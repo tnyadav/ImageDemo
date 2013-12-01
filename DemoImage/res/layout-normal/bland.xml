@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-     android:id="@+id/editBland"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal" >
-    
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 
-</LinearLayout>
+        android:id="@+id/horizontalScrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:scrollbars="none"
+       >
+<!--  android:scrollbarFadeDuration="10" -->
+        <LinearLayout
+            android:id="@+id/editBland"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+        </LinearLayout>
+   </HorizontalScrollView>

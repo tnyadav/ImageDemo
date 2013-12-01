@@ -63,7 +63,7 @@
                 android:orientation="vertical" >
 
                 <Button
-                    android:id="@+id/editFrame"
+                    android:id="@+id/editCurve"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -77,11 +77,11 @@
                 android:orientation="vertical" >
 
                 <Button
-                    android:id="@+id/button1"
+                     android:id="@+id/editFrame"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/edit_effect_button_background" />
+                    android:background="@drawable/edit_frame_button_background" />
             </LinearLayout>
 
             <LinearLayout
@@ -105,11 +105,11 @@
                 android:orientation="vertical" >
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/editEffect"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/edit_frame_button_background" />
+                    android:background="@drawable/edit_effect_button_background" />
+
             </LinearLayout>
 
             <LinearLayout

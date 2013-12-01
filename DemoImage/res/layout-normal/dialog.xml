@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="10dp"
         android:layout_weight="1"
-        android:background="@drawable/pu_usecamera" />
+        android:background="@drawable/popup_usecamera_button_background" />
 
     <Button
         android:id="@+id/dialogAddPhoto"
@@ -19,7 +19,7 @@
         android:layout_height="match_parent"
          android:layout_marginTop="5dp"
         android:layout_weight="1"
-        android:background="@drawable/pu_addphotos" />
+        android:background="@drawable/popup_addphoto_button_background" />
 
     <Button
         android:id="@+id/dialogAddText"
@@ -27,7 +27,7 @@
         android:layout_height="fill_parent"
         android:layout_marginTop="5dp"
         android:layout_weight="1"
-        android:background="@drawable/pu_addtext" />
+        android:background="@drawable/popup_addtext_button_background" />
 
     <Button
         android:id="@+id/dialogAddSticker"
@@ -36,6 +36,6 @@
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
         android:layout_weight="1"
-        android:background="@drawable/pu_addstickers" />
+        android:background="@drawable/popup_addstrickers_button_background" />
 
 </LinearLayout>
