@@ -25,20 +25,28 @@
  */
 package com.pic.moment;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Formatter.BigDecimalLayoutForm;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
@@ -47,11 +55,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 
 import com.pic.moment.MultiTouchController.MultiTouchObjectCanvas;
 import com.pic.moment.MultiTouchController.PointInfo;
 import com.pic.moment.MultiTouchController.PositionAndScale;
+import com.pic.moment.utils.Util;
 
 public class CollagePicCustomView extends View implements
 		MultiTouchObjectCanvas<ImgCollage> {
@@ -63,6 +73,7 @@ public class CollagePicCustomView extends View implements
 	private Context context;
 	private Resources resources;
 	private Dialog dialog;
+	private Canvas canvas;
 	
 	public void setDialog(Dialog dialog) {
 		this.dialog = dialog;
@@ -158,13 +169,11 @@ public class CollagePicCustomView extends View implements
 
 	/** Called by activity's onResume() method to load the images */
 	public void loadImages(Context context, Drawable []IMAGES,boolean isText) {
-		Resources res = context.getResources();
-		 for (int i = 0; i < IMAGES.length; i++)
+			 for (int i = 0; i < IMAGES.length; i++)
 		 {
-			 ImgCollage img = new ImgCollage(IMAGES[i], res,isText);
-			 
-		     mImages.add(img);
-		     img.load(res);
+			 ImgCollage img = new ImgCollage(IMAGES[i], resources,isText);
+			  mImages.add(img);
+		     img.load();
 		 }
 	
 	}
@@ -184,10 +193,10 @@ public class CollagePicCustomView extends View implements
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
+		this.canvas=canvas;
 		if (resources!=null) {
 			DisplayMetrics metrics = resources.getDisplayMetrics();
-
-			int displayWidth = metrics.widthPixels;
+            int displayWidth = metrics.widthPixels;
 			int displayHeight = metrics.heightPixels;
 			Drawable drawable=context.getResources().getDrawable(R.drawable.cl_main_bg);
 			drawable.setBounds(0, 0, displayWidth, displayHeight);
@@ -393,6 +402,29 @@ public class CollagePicCustomView extends View implements
 		dialog.show();
 	}
 
+	public void save() {
+		
+		Bitmap bitmap=Bitmap.createBitmap(Util.getScreenWidth(context) , Util.getScreenHeight(context), Bitmap.Config.ARGB_8888);
+		canvas.setBitmap(bitmap);
+		String temPath= Environment.getExternalStorageDirectory()+"/PicMomentsTemp";
+		try {
+			File file = new File(temPath);
+	            if (!file.exists())
+	            {
+	            	file.mkdirs();
+	            }
+	            
+	        String time=""+System.currentTimeMillis();    
+
+			bitmap.compress(CompressFormat.JPEG, 100, new FileOutputStream(temPath+"/"+time+".jpeg"));
+			Toast.makeText(context, "saved in "+temPath+"/"+time+".jpeg", 1).show();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Log.e("t", e.toString());
+			Toast.makeText(context, "faild to save", 1).show();
+		}
 	
+	}
 	
 }

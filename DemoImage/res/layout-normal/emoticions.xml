@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/emoticonMainContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     android:weightSum="5"
+    android:background="@android:color/transparent"
+    android:orientation="horizontal" >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/emoticonMakeup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/makeup" />
+
+        </LinearLayout>
+
+        <LinearLayout
+             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+             android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/emoticonText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 android:layout_gravity="center"
+                android:background="@drawable/text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+              android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+             android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/emoticonEmoticon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 android:layout_gravity="center"
+                android:background="@drawable/emoticon" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            
+             android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/emoticonLight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 android:layout_gravity="center"
+                android:background="@drawable/color" />
+
+        </LinearLayout>
+
+<LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            
+             android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/emoticonClose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 android:layout_gravity="center"
+                 android:background="@drawable/fr_btn" />
+
+        </LinearLayout>
+
+</LinearLayout>

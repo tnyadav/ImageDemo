@@ -215,25 +215,25 @@ public class ImgCollage {
 		this.isText = isText;
         this.resources = res;
 		this.deleted = false;
-		getMetrics(res);
+		getMetrics();
 	}
 
-	private void getMetrics(Resources res) {
-		DisplayMetrics metrics = res.getDisplayMetrics();
+	private void getMetrics() {
+		DisplayMetrics metrics = resources.getDisplayMetrics();
 		
 		// this.displayWidth = metrics.widthPixels;
 		// this.displayHeight = metrics.heightPixels;
-		this.displayWidth = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
+		this.displayWidth = resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
 				.max(metrics.widthPixels, metrics.heightPixels) : Math.min(
 				metrics.widthPixels, metrics.heightPixels);
-		this.displayHeight = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
+		this.displayHeight = resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
 				.min(metrics.widthPixels, metrics.heightPixels) : Math.max(
 				metrics.widthPixels, metrics.heightPixels);
 	}
 
 	/** Called by activity's onResume() method to load the images */
-	public void load(Resources res) {
-		getMetrics(res);
+	public void load() {
+		
 		this.width = drawable.getIntrinsicWidth();
 		this.height = drawable.getIntrinsicHeight();
 

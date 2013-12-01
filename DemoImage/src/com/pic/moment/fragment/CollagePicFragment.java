@@ -1,5 +1,8 @@
 package com.pic.moment.fragment;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.List;
 
 import android.app.Activity;
@@ -12,9 +15,11 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -23,6 +28,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,18 +41,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.Toast;
 
 import com.pic.moment.CollagePicCustomView;
 import com.pic.moment.CustomMenu;
 import com.pic.moment.ImgCollage;
 import com.pic.moment.R;
-import com.pic.moment.ShareFragment;
 import com.pic.moment.activity.MultiPhotoSelectActivity;
 import com.pic.moment.beans.FrameCoordinete;
 import com.pic.moment.utils.FrameCoordinateProvider;
 import com.pic.moment.utils.PopupProvider;
 import com.pic.moment.utils.ScalingUtilities;
 import com.pic.moment.utils.PopupProvider.frame;
+import com.pic.moment.utils.PopupProvider.frameChild;
 import com.pic.moment.utils.ScalingUtilities.ScalingLogic;
 import com.pic.moment.utils.Util;
 
@@ -182,6 +189,7 @@ collageDelete = (Button)homeFragmentView.findViewById(R.id.collageDelete);
 collageDelete.setClickable(false);
 frameLayout=(FrameLayout)homeFragmentView.findViewById(R.id.mainFrameContainer);
 photoSorter = new CollagePicCustomView(picmomentActivity);
+photoSorter.setResources(getResources());
 photoSorter.setDelete(collageDelete);
 photoSorter.setDialog(getDailog());
 if (picmomentActivity.mImages.size()!=0) {
@@ -389,11 +397,40 @@ frameLayout.addView(photoSorter);
  			
  			@Override
  			public void onClick(View arg0) {
- 				photoSorter.saveclicked=true; 
+ 				Bitmap returnedBitmap = Bitmap.createBitmap(photoSorter.getWidth(),
+ 						photoSorter.getHeight(), Bitmap.Config.ARGB_8888);
+ 				Canvas canvas = new Canvas(returnedBitmap);
+ 				Drawable bgDrawable = photoSorter.getBackground();
+ 				if (bgDrawable != null)
+ 					bgDrawable.draw(canvas);
+ 				else
+ 					canvas.drawColor(Color.WHITE);
+ 				photoSorter.draw(canvas);
+
+ 				try {
+ 					File file = new File(temPath);
+ 			            if (!file.exists())
+ 			            {
+ 			            	file.mkdirs();
+ 			            }
+ 			            
+ 			        String time=""+System.currentTimeMillis();    
+
+ 			       returnedBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(temPath+"/"+time+".jpeg"));
+ 			       Toast.makeText(picmomentActivity, "saved in "+temPath+"/"+time+".jpeg", 1).show();
+ 				} catch (Exception e) {
+ 					// TODO Auto-generated catch block
+ 					e.printStackTrace();
+ 					Log.e("t", e.toString());
+ 					Toast.makeText(picmomentActivity, "faild to save", 1).show();
+ 				}
+
+ 				returnedBitmap.recycle();
+ /*				photoSorter.saveclicked=true; 
  				photoSorter.setDrawingCacheEnabled(true);
-				/*Bitmap b = Bitmap.createBitmap(photoSorter.getWidth(),
-						photoSorter.getHeight(), Bitmap.Config.ARGB_8888);*/
- 			/*	try {
+				Bitmap b = Bitmap.createBitmap(photoSorter.getWidth(),
+						photoSorter.getHeight(), Bitmap.Config.ARGB_8888);
+ 				try {
  					File file = new File(temPath);
  			            if (!file.exists())
  			            {
@@ -409,12 +446,12 @@ frameLayout.addView(photoSorter);
  					e.printStackTrace();
  					Log.e("t", e.toString());
  					Toast.makeText(picmomentActivity, "faild to save", 1).show();
- 				}*/
+ 				}
  				ShareFragment shareFragment=new ShareFragment();
 				Bundle bundle=new Bundle();
 				bundle.putParcelable("image", Util.getBitmapFromView(photoSorter));
 				shareFragment.setArguments(bundle);
-				picmomentActivity.pushFragments(shareFragment, true, true);
+				picmomentActivity.pushFragments(shareFragment, true, true);*/
  			}
  		});
  		if (photoSorter.mImages.size()==0) {
@@ -549,27 +586,10 @@ frameLayout.addView(photoSorter);
 				
 				@Override
 				public void onClick(View v) {
-					
-					CustomMenu.hide();
-					View	navigationViewContainer = PopupProvider.getEmocione(picmomentActivity, new frame() {
-						
-						@Override
-						public void frameClicked(int index) {
-							if (index==9) {
-								CustomMenu.hide();
-								showBottomBar();
-							
-							}else {
-							   
-								  Drawable drawable=getResources().getDrawable(PopupProvider.emocionsbig[index]);
-								  photoSorter.loadImages(picmomentActivity,new Drawable[] {drawable},false);
-								
-							}
-							
-						}
-					});
 					dialog1.dismiss();
-					CustomMenu.show(picmomentActivity,navigationViewContainer);
+					addStrikerView();
+					
+					
 				}
 			});
 			return dialog1;
@@ -615,4 +635,70 @@ frameLayout.addView(photoSorter);
 
 		}
 	};*/
+	private void addStrikerView() {
+
+		// **** triker
+		CustomMenu.hide();
+		View stickerParent = PopupProvider.getEmoticone(picmomentActivity,
+				new frame() {
+
+					@Override
+					public void frameClicked(int index) {
+						CustomMenu.hide();
+						if (index==4) {
+							showBottomBar();
+						}else {
+							View stickerChild = PopupProvider.getEmoticonChild(
+									picmomentActivity, new frameChild() {
+
+										@Override
+										public void frameChildClicked(
+												int emoticonType, int index) {
+
+											if (index == -1) {
+												addStrikerView();
+											} else {
+												addStrikerToView(emoticonType,
+														index);
+											}
+
+										}
+									}, index);
+							CustomMenu.show(picmomentActivity, stickerChild);
+						}
+						
+						
+						
+					}
+				});
+		
+		CustomMenu.show(picmomentActivity, stickerParent);
+
+	}
+private void addStrikerToView(int emoticonType, int index) {
+		
+		Rect rect = new Rect();
+		rect.right=Util.getScreenWidth(picmomentActivity);
+		rect.bottom=Util.getScreenHeight(picmomentActivity);
+			
+		switch (emoticonType) {
+		case 0:
+
+			break;
+		case 1:
+
+			break;
+		case 2:
+		
+		 Drawable drawable=getResources().getDrawable(PopupProvider.emocionsbig[index]);
+								  photoSorter.loadImages(picmomentActivity,new Drawable[] {drawable},false);
+		
+				break;
+		case 3:
+		
+			break;
+		default:
+			break;
+		}
+	}
 }

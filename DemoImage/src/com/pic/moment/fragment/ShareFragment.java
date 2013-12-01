@@ -1,4 +1,4 @@
-package com.pic.moment;
+package com.pic.moment.fragment;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,7 +17,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.pic.moment.fragment.BaseFragment;
+import com.pic.moment.R;
+import com.pic.moment.R.id;
+import com.pic.moment.R.layout;
 
 public class ShareFragment extends BaseFragment{
 private View shareFragment;

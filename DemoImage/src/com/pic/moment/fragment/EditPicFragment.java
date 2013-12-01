@@ -42,6 +42,7 @@ import com.pic.moment.CustomMenu;
 import com.pic.moment.EditPicCustomView;
 import com.pic.moment.R;
 import com.pic.moment.utils.PopupProvider;
+import com.pic.moment.utils.PopupProvider.frameChild;
 import com.pic.moment.utils.ScalingUtilities;
 import com.pic.moment.utils.PopupProvider.frame;
 import com.pic.moment.utils.ScalingUtilities.ScalingLogic;
@@ -183,7 +184,8 @@ editAdd.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				linearLayout.setVisibility(View.VISIBLE);
-				
+				addStrikerView();
+			/*	
 				View	navigationViewContainer = PopupProvider.getEmocione(picmomentActivity, new frame() {
 					
 					@Override
@@ -205,10 +207,8 @@ editAdd.setOnClickListener(new OnClickListener() {
 						}
 						
 					}
-				});	
-				
-				linearLayout.removeAllViews();
-				linearLayout.addView(navigationViewContainer);
+				});	*/
+			
 			}
 		});
 		dialog.show();
@@ -218,6 +218,7 @@ editAdd.setOnClickListener(new OnClickListener() {
 
 mainContainer=(FrameLayout)homeFragmentView.findViewById(R.id.mainFrameContainer);
 editPicCustomView = new EditPicCustomView(picmomentActivity);
+editPicCustomView.getBackground();
 mainContainer.addView(editPicCustomView);
 
 
@@ -408,5 +409,63 @@ mainContainer.addView(editPicCustomView);
 		}
           
      }  
-	
+	private void addStrikerView() {
+		View	stickerParent =PopupProvider.getEmoticone(picmomentActivity, new frame() {
+			
+			@Override
+			public void frameClicked(int index) {
+				if (index==4) {
+					linearLayout.removeAllViews();
+					//linearLayout.addView(null);
+					
+				}else {
+					
+					View stickerChild=PopupProvider.getEmoticonChild(picmomentActivity, new frameChild() {
+						
+						@Override
+						public void frameChildClicked(int emoticonType, int index) {
+						
+							if (index==-1) {
+								addStrikerView();
+							}else {
+								addStrikerToView(emoticonType, index);
+							}
+							
+						}
+					}, index);
+					linearLayout.removeAllViews();
+					linearLayout.addView(stickerChild);	
+				}
+			
+			}
+		});
+		linearLayout.removeAllViews();
+		linearLayout.addView(stickerParent);
+	}
+	private void addStrikerToView(int emoticonType, int index) {
+		
+		Rect rect = new Rect();
+		rect.right=Util.getScreenWidth(picmomentActivity);
+		rect.bottom=Util.getScreenHeight(picmomentActivity);
+			
+		switch (emoticonType) {
+		case 0:
+
+			break;
+		case 1:
+
+			break;
+		case 2:
+			Bitmap bitmap=ScalingUtilities.decodeResource(getResources(), PopupProvider.emocionsbig[index],editPicCustomView.getWidth(),
+	      			editPicCustomView.getHeight(), ScalingLogic.FIT);
+			bitmap=ScalingUtilities.createScaledBitmap(bitmap, editPicCustomView.getWidth(),editPicCustomView.getHeight(), ScalingLogic.FIT);
+			editPicCustomView.loadImages(picmomentActivity,new BitmapDrawable(getResources(),bitmap) ,rect,false);
+			break;
+		case 3:
+		
+			break;
+		default:
+			break;
+		}
+	}
 }
