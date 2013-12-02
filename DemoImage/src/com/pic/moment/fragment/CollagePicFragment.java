@@ -3,6 +3,7 @@ package com.pic.moment.fragment;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -44,6 +45,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Toast;
 
+import com.chute.sdk.v2.model.AssetModel;
 import com.pic.moment.CollagePicCustomView;
 import com.pic.moment.CustomMenu;
 import com.pic.moment.ImgCollage;
@@ -51,6 +53,7 @@ import com.pic.moment.R;
 import com.pic.moment.activity.MultiPhotoSelectActivity;
 import com.pic.moment.activity.PicmomentActivity;
 import com.pic.moment.beans.FrameCoordinete;
+import com.pic.moment.multiimagepicker.ChoosePhotosActivityIntentWrapper;
 import com.pic.moment.utils.FrameCoordinateProvider;
 import com.pic.moment.utils.PopupProvider;
 import com.pic.moment.utils.SaveFileTask;
@@ -234,6 +237,29 @@ frameLayout.addView(photoSorter);
              String filePath = cursor.getString(columnIndex);
         	new LoadImagesFromSDCard().execute(new String[]{filePath});
         }
+        
+        if (requestCode == ChoosePhotosActivityIntentWrapper.ACTIVITY_FOR_RESULT_KEY) {
+            if (resultCode == Activity.RESULT_OK) {
+              ChoosePhotosActivityIntentWrapper wrapper = new ChoosePhotosActivityIntentWrapper(
+                  data);
+              String[] selectedItems = wrapper
+                      .getAssetPathList().toArray(new String[wrapper
+                                                             .getAssetPathList().size()]);
+              new LoadImagesFromSDCard().execute(selectedItems);
+             /* ArrayList<String> selectedItems=wrapper
+                      .getAssetPathList();*/
+             /* List<AssetModel> assetList = makeAssetList(wrapper
+                  .getAssetPathList());*/
+              
+             /* int photosSelected = assetList.size();
+              Toast.makeText(picmomentActivity,
+                  photosSelected + " photos selected!",
+                  Toast.LENGTH_SHORT).show();*/
+            } else {
+              Toast.makeText(picmomentActivity, "No photos selected",
+                  Toast.LENGTH_SHORT).show();
+            }
+          }
 	}
         private Bitmap addWhiteBorder(Bitmap bmp, int borderSize) {
     	    Bitmap bmpWithBorder = Bitmap.createBitmap(bmp.getWidth() + borderSize * 2, bmp.getHeight() + borderSize * 2, bmp.getConfig());
@@ -402,9 +428,7 @@ frameLayout.addView(photoSorter);
  			@Override
 			public void onClick(View arg0) {
  				fileName = "PicMoment" + System.currentTimeMillis();
- 				final ProgressDialog Dialog = new ProgressDialog(picmomentActivity);
- 				  Dialog.setMessage("Saving File");
- 				  Dialog.show();
+ 				
  			/*	new Handler().post(new Runnable() {
 					
 					@Override
@@ -419,20 +443,30 @@ frameLayout.addView(photoSorter);
 		 						canvas.drawColor(Color.WHITE);
 		 					photoSorter.draw(canvas);
 		 			        try {
+		 			        	
+		 							File file = new File(Util.temPath);
+		 					            if (!file.exists())
+		 					            {
+		 					            	file.mkdirs();
+		 					            }
+		 					 
+		 					      
+		 						
 		 						returnedBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(Util.temPath+"/"+fileName+".jpeg"));
 		 						Toast.makeText(picmomentActivity, "saved in "+Util.temPath+"/"+fileName+".jpeg", 1).show();
 		 						 ShareFragment shareFragment=new ShareFragment();
 		 						 Bundle bundle=new Bundle();
 		 							bundle.putString("filename", fileName);
 		 							shareFragment.setArguments(bundle);
-		 							Dialog.dismiss();
+		 							
 		 							picmomentActivity.pushFragments(shareFragment, true, true);
 		 			        
 		 			        
 		 			        } catch (FileNotFoundException e) {
 		 						// TODO Auto-generated catch block
 		 						e.printStackTrace();
-		 						Dialog.dismiss();
+		 						Toast.makeText(picmomentActivity, "saved faild", 1).show();
+			 					
 		 					
 		 					}
 						
@@ -496,8 +530,12 @@ frameLayout.addView(photoSorter);
 						/*	Intent i = new Intent(
 									Intent.ACTION_PICK,
 									android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);*/
-					Intent i = new Intent(picmomentActivity,MultiPhotoSelectActivity.class);
-							startActivityForResult(i, RESULT_LOAD_IMAGE);
+					/*Intent i = new Intent(picmomentActivity,MultiPhotoSelectActivity.class);
+							startActivityForResult(i, RESULT_LOAD_IMAGE);*/
+					 ChoosePhotosActivityIntentWrapper wrapper = new ChoosePhotosActivityIntentWrapper(
+						        picmomentActivity);
+						    wrapper.startActivityForResult(picmomentActivity,
+						        ChoosePhotosActivityIntentWrapper.ACTIVITY_FOR_RESULT_KEY);
 							dialog1.dismiss();
 							CustomMenu.hide();
 				}
@@ -704,4 +742,14 @@ private ProgressDialog Dialog;
 
 
 }
+
+public List<AssetModel> makeAssetList(ArrayList<String> gridSelectedFilePath) {
+    List<AssetModel> list = new ArrayList<AssetModel>();
+    AssetModel asset = new AssetModel();
+    for (String filePath : gridSelectedFilePath) {
+      asset.setUrl(filePath);
+      list.add(asset);
+    }
+    return list;
+  }
 }

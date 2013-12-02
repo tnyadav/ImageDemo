@@ -1,5 +1,9 @@
 package com.pic.moment.fragment;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -36,6 +40,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 
 import com.pic.moment.CustomMenu;
@@ -59,6 +64,7 @@ Uri imageUri= null;
 LinearLayout linearLayout;
 FrameLayout mainContainer;
 EditPicCustomView editPicCustomView;
+protected String fileName;
 private String temPath= Environment.getExternalStorageDirectory()+"/PicMomentsTemp";
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,112 +111,9 @@ editAdd = (Button)homeFragmentView.findViewById(R.id.editAdd);
 editAdd.setOnClickListener(new OnClickListener() {
 	
 	@Override
-	public void onClick(View arg0) {// custom dialog
-		final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme);
-		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		dialog.setCanceledOnTouchOutside(true);
-		Window window = dialog.getWindow();
-		WindowManager.LayoutParams wlp = window.getAttributes();
-		wlp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
-		wlp.height=LayoutParams.WRAP_CONTENT;
-		wlp.width=LayoutParams.WRAP_CONTENT;
-		//wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-		window.setAttributes(wlp);
-		//window.clearFlags(LayoutParams.FLAG_DIM_BEHIND);
-		dialog.setCancelable(true);
-		dialog.setContentView(R.layout.dialog);
-	    Button dialogUseCamera = (Button)dialog.findViewById(R.id.dialogUseCamera);
-	    dialogUseCamera.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-			
-				takePicture();
-				dialog.dismiss();
-				
-			}
-		});
-	    Button dialogAddPhoto = (Button)dialog.findViewById(R.id.dialogAddPhoto);
-	    dialogAddPhoto.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-						Intent i = new Intent(
-								Intent.ACTION_PICK,
-								android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-						startActivityForResult(i, RESULT_LOAD_IMAGE);
-						dialog.dismiss();
-			}
-		});
-	    Button dialogAddText = (Button)dialog.findViewById(R.id.dialogAddText);
-	    dialogAddText.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
-
-				
-				final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme_back);
-				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-				dialog.setCanceledOnTouchOutside(true);
-				Window window = dialog.getWindow();
-				WindowManager.LayoutParams wlp = window.getAttributes();
-				wlp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
-				wlp.height=LayoutParams.WRAP_CONTENT;
-				wlp.width=LayoutParams.WRAP_CONTENT;
-				wlp.x=50;
-				wlp.y=150;
-				wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-				window.setAttributes(wlp);
-				//window.clearFlags(LayoutParams.FLAG_DIM_BEHIND);
-				dialog.setCancelable(true);
-				dialog.setContentView(R.layout.add_text);
-				final EditText et=(EditText)dialog.findViewById(R.id.et);
-				et.setTextColor(Color.BLACK);
-			    Button save = (Button)dialog.findViewById(R.id.done);
-			    save.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					InputMethodManager imm = (InputMethodManager)picmomentActivity.getSystemService(
-						      Context.INPUT_METHOD_SERVICE);
-						imm.hideSoftInputFromWindow(et.getWindowToken(), 0);
-					dialog.dismiss();
-					et.clearComposingText();
-					et.setFocusable(false);
-					et.setBackgroundColor(Color.TRANSPARENT);
-					Rect rect = new Rect();
-					rect.right=Util.getScreenWidth(picmomentActivity);
-					rect.bottom=Util.getScreenHeight(picmomentActivity);
-					//editPicCustomView.getGlobalVisibleRect(rect);
-					editPicCustomView.loadImages(picmomentActivity,
-							 new BitmapDrawable(
-									picmomentActivity.getResources(),
-									Util.getBitmapFromView(et)),rect,isImageMode);
-					CustomMenu.hide();
-				
-				}
-			});
-			  
-				dialog.show();
-				
-			}
-		});
-	    Button dialogAddSticker = (Button)dialog.findViewById(R.id.dialogAddSticker);
-	    dialogAddSticker.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
-				linearLayout.setVisibility(View.VISIBLE);
-				addStrikerView();
-			
-			}
-		});
-		dialog.show();
-		
-		}
+	public void onClick(View arg0) {
+		showDialog();
+	}
 });
 
 editEffect=(Button)homeFragmentView.findViewById(R.id.editEffect);
@@ -227,14 +130,65 @@ editShare.setOnClickListener(new OnClickListener() {
 	
 	@Override
 	public void onClick(View arg0) {
-		// TODO Auto-generated method stub
-		
+		fileName = "PicMoment" + System.currentTimeMillis();
+		Bitmap returnedBitmap = Bitmap.createBitmap(editPicCustomView.getWidth(),
+				editPicCustomView.getHeight(), Bitmap.Config.ARGB_8888);
+				Canvas canvas = new Canvas(returnedBitmap);
+				Drawable bgDrawable = editPicCustomView.getBackground();
+				if (bgDrawable != null)
+					bgDrawable.draw(canvas);
+				else
+					canvas.drawColor(Color.WHITE);
+				editPicCustomView.draw(canvas);
+		        try {
+		        	File file = new File(Util.temPath);
+			            if (!file.exists())
+			            {
+			            	file.mkdirs();
+			            }
+
+					returnedBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(Util.temPath+"/"+fileName+".jpeg"));
+					Toast.makeText(picmomentActivity, "saved in "+Util.temPath+"/"+fileName+".jpeg", 1).show();
+					 ShareFragment shareFragment=new ShareFragment();
+					 Bundle bundle=new Bundle();
+						bundle.putString("filename", fileName);
+						shareFragment.setArguments(bundle);
+						
+						picmomentActivity.pushFragments(shareFragment, true, true);
+		        
+		        
+		        } catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Toast.makeText(picmomentActivity, "saved faild", 1).show();
+	 				
+					
+				}
 	}
 });
 
 mainContainer=(FrameLayout)homeFragmentView.findViewById(R.id.mainFrameContainer);
 editPicCustomView = new EditPicCustomView(picmomentActivity);
-editPicCustomView.getBackground();
+editBack=(Button)homeFragmentView.findViewById(R.id.editBack);
+editBack.setOnClickListener(new OnClickListener() {
+	
+	@Override
+	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+});
+editReset=(Button)homeFragmentView.findViewById(R.id.editReset);
+editReset.setOnClickListener(new OnClickListener() {
+	
+	@Override
+	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+});
+editPicCustomView.setBack(editBack);
+editPicCustomView.setReset(editReset);
 mainContainer.addView(editPicCustomView);
 
 
@@ -251,8 +205,6 @@ mainContainer.addView(editPicCustomView);
 		
 		super.onResume();
 
-//Log.e("frame", mainContainer.getHeight()+" w: "+mainContainer.getWidth());
-//Log.e("editPicCustomView", editPicCustomView.getHeight()+" w: "+editPicCustomView.getWidth());
 	}
 
 	@Override
@@ -492,5 +444,113 @@ mainContainer.addView(editPicCustomView);
 		default:
 			break;
 		}
+	}
+	private void showDialog() {
+		// custom dialog
+				final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme);
+				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+				dialog.setCanceledOnTouchOutside(true);
+				Window window = dialog.getWindow();
+				WindowManager.LayoutParams wlp = window.getAttributes();
+				wlp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
+				wlp.height=LayoutParams.WRAP_CONTENT;
+				wlp.width=LayoutParams.WRAP_CONTENT;
+				//wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+				window.setAttributes(wlp);
+				//window.clearFlags(LayoutParams.FLAG_DIM_BEHIND);
+				dialog.setCancelable(true);
+				dialog.setContentView(R.layout.dialog);
+			    Button dialogUseCamera = (Button)dialog.findViewById(R.id.dialogUseCamera);
+			    dialogUseCamera.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+					
+						takePicture();
+						dialog.dismiss();
+						
+					}
+				});
+			    Button dialogAddPhoto = (Button)dialog.findViewById(R.id.dialogAddPhoto);
+			    dialogAddPhoto.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						
+								Intent i = new Intent(
+										Intent.ACTION_PICK,
+										android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+								startActivityForResult(i, RESULT_LOAD_IMAGE);
+								dialog.dismiss();
+					}
+				});
+			    Button dialogAddText = (Button)dialog.findViewById(R.id.dialogAddText);
+			    dialogAddText.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+
+						
+						final Dialog dialog = new Dialog(picmomentActivity,R.style.custom_dialog_theme_back);
+						dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+						dialog.setCanceledOnTouchOutside(true);
+						Window window = dialog.getWindow();
+						WindowManager.LayoutParams wlp = window.getAttributes();
+						wlp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
+						wlp.height=LayoutParams.WRAP_CONTENT;
+						wlp.width=LayoutParams.WRAP_CONTENT;
+						wlp.x=50;
+						wlp.y=150;
+						wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+						window.setAttributes(wlp);
+						//window.clearFlags(LayoutParams.FLAG_DIM_BEHIND);
+						dialog.setCancelable(true);
+						dialog.setContentView(R.layout.add_text);
+						final EditText et=(EditText)dialog.findViewById(R.id.et);
+						et.setTextColor(Color.BLACK);
+					    Button save = (Button)dialog.findViewById(R.id.done);
+					    save.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							InputMethodManager imm = (InputMethodManager)picmomentActivity.getSystemService(
+								      Context.INPUT_METHOD_SERVICE);
+								imm.hideSoftInputFromWindow(et.getWindowToken(), 0);
+							dialog.dismiss();
+							et.clearComposingText();
+							et.setFocusable(false);
+							et.setBackgroundColor(Color.TRANSPARENT);
+							Rect rect = new Rect();
+							rect.right=Util.getScreenWidth(picmomentActivity);
+							rect.bottom=Util.getScreenHeight(picmomentActivity);
+							//editPicCustomView.getGlobalVisibleRect(rect);
+							editPicCustomView.loadImages(picmomentActivity,
+									 new BitmapDrawable(
+											picmomentActivity.getResources(),
+											Util.getBitmapFromView(et)),rect,isImageMode);
+							CustomMenu.hide();
+						
+						}
+					});
+					  
+						dialog.show();
+						
+					}
+				});
+			    Button dialogAddSticker = (Button)dialog.findViewById(R.id.dialogAddSticker);
+			    dialogAddSticker.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+						linearLayout.setVisibility(View.VISIBLE);
+						addStrikerView();
+					
+					}
+				});
+				dialog.show();
+				
+				
 	}
 }

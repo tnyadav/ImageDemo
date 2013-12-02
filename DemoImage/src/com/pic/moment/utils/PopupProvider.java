@@ -277,7 +277,7 @@ public static View getEmoticonChild(PicmomentActivity picmomentActivity,
 	});
 		switch (emoticonType) {
 		case 0:
-			Toast.makeText(picmomentActivity, makeup.length+"", 1).show();
+			//Toast.makeText(picmomentActivity, makeup.length+"", 1).show();
 			emoticonChildContainer.removeAllViews();
 			for (int i = 0; i <makeup.length; i++) {
 				final int tempI = i;

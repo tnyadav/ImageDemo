@@ -51,16 +51,24 @@ import com.pic.moment.MultiTouchController.PositionAndScale;
 public class EditPicCustomView extends View implements
 		MultiTouchObjectCanvas<ImgEdit> {
 
-	private static final String[] infoLines = { "Tap anywherejhjhjhjhfjhfhg to add an item"};
-
+	
 	public ArrayList<ImgEdit> mImages = new ArrayList<ImgEdit>();
 	public ArrayList<ImgEdit> mImages1 = new ArrayList<ImgEdit>();
 	public static boolean saveclicked = false;
 	private Context context;
 	private Resources resources;
 	private Dialog dialog;
+	private Button back,reset;
 	
-	
+
+	public void setBack(Button back) {
+		this.back = back;
+	}
+
+	public void setReset(Button reset) {
+		this.reset = reset;
+	}
+
 	public void setDialog(Dialog dialog) {
 		this.dialog = dialog;
 	}
@@ -73,16 +81,7 @@ public class EditPicCustomView extends View implements
 		this.resources = resources;
 	}
 
-	public Button getDelete() {
-		return delete;
-	}
 
-	public void setDelete(Button delete) {
-		this.delete = delete;
-	}
-
-	private Button delete;
-	// --
 
 	private MultiTouchController<ImgEdit> multiTouchController/* = new MultiTouchController<Img>(
 			this)*/;
@@ -184,12 +183,12 @@ public class EditPicCustomView extends View implements
 		super.onDraw(canvas);
 		
 		if (mImages.size() == 0) {
-			float spacing = mLinePaintTouchPointCircle.getFontSpacing();
+			/*float spacing = mLinePaintTouchPointCircle.getFontSpacing();
 			float totHeight = spacing * infoLines.length;
 			for (int i = 0; i < infoLines.length; i++)
 				paintText(canvas, infoLines[i],
 						(canvas.getHeight() - totHeight) * .5f + i * spacing);
-
+*/
 		} else {
 			if (saveclicked) {
 
@@ -208,7 +207,8 @@ public class EditPicCustomView extends View implements
 
 		}
 		invalidate();
-		delete.bringToFront();
+		back.bringToFront();
+		reset.bringToFront();
 		
 
 	}
@@ -275,7 +275,7 @@ public class EditPicCustomView extends View implements
 
 						@Override
 						public void run() {
-							delete.setBackgroundResource(R.drawable.cl_deleteoff);
+							
 
 						}
 					}, 100);

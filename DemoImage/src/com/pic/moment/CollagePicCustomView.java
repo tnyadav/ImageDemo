@@ -230,7 +230,7 @@ public class CollagePicCustomView extends View implements
 
 		}
 		invalidate();
-		//delete.bringToFront();
+		delete.bringToFront();
 		
 
 	}
