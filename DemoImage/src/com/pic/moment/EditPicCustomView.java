@@ -170,10 +170,16 @@ public class EditPicCustomView extends View implements
 	 * Called by activity's onPause() method to free memory used for loading the
 	 * images
 	 */
-	public void unloadImages(int index) {
+	public void unloadImages() {
 		int n = mImages.size();
-		// for (int i = 0; i < n; i++)
-		mImages.get(index).unload();
+		if (n>=1) {
+			for (int i = 1; i < n; i++)
+				
+					 mImages.get(i).unload();
+			
+		}
+		 
+		 
 	}
 
 	// ---------------------------------------------------------------------------------------------------

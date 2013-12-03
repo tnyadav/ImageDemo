@@ -23,15 +23,19 @@
         android:layout_margin="5dp"
         android:background="@drawable/edit_reset_button_background" />
 
-    <FrameLayout
+     <FrameLayout
         android:id="@+id/mainFrameContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottom"
         android:layout_alignParentTop="true"
-        
-        android:layout_centerHorizontal="true" />
-
+        android:layout_centerHorizontal="true" /> 
+   <jp.co.cyberagent.android.gpuimage.GPUImageView
+        android:id="@+id/gpuimage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottom"
+        android:layout_alignParentTop="true"/>
     <LinearLayout
         android:id="@+id/bottom"
         android:layout_width="match_parent"

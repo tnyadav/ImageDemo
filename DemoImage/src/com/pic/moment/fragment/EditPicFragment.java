@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
+import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
+import jp.co.cyberagent.android.gpuimage.GPUImageView;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -23,7 +26,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -38,18 +41,19 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.Toast;
 
 import com.pic.moment.CustomMenu;
 import com.pic.moment.EditPicCustomView;
+import com.pic.moment.GPUImageFilterTools.FilterAdjuster;
+import com.pic.moment.ImgEdit;
 import com.pic.moment.R;
 import com.pic.moment.utils.PopupProvider;
+import com.pic.moment.utils.PopupProvider.frame;
 import com.pic.moment.utils.PopupProvider.frameChild;
 import com.pic.moment.utils.ScalingUtilities;
-import com.pic.moment.utils.PopupProvider.frame;
 import com.pic.moment.utils.ScalingUtilities.ScalingLogic;
 import com.pic.moment.utils.Util;
 
@@ -59,13 +63,15 @@ private Button editBack,editReset,editCurve,editFrame,editAdd,editEffect,editSha
 private final int RESULT_LOAD_IMAGE = 001;
 private final int CAPTURE_IMAGE = 002;
 private boolean isImageMode=false;
-private ImageView imageView;
 Uri imageUri= null;
 LinearLayout linearLayout;
 FrameLayout mainContainer;
 EditPicCustomView editPicCustomView;
+private GPUImageFilter mFilter;
+private FilterAdjuster mFilterAdjuster;
+private GPUImageView mGPUImageView;
 protected String fileName;
-private String temPath= Environment.getExternalStorageDirectory()+"/PicMomentsTemp";
+ Uri uri;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -121,7 +127,15 @@ editEffect.setOnClickListener(new OnClickListener() {
 	
 	@Override
 	public void onClick(View arg0) {
-		// TODO Auto-generated method stub
+		 uri=Uri.fromFile(new File(saveImage()));
+		/*new Handler().postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				setGPUImageView(uri);
+			}
+		}, 5000);*/
+		
 		
 	}
 });
@@ -130,45 +144,12 @@ editShare.setOnClickListener(new OnClickListener() {
 	
 	@Override
 	public void onClick(View arg0) {
-		fileName = "PicMoment" + System.currentTimeMillis();
-		Bitmap returnedBitmap = Bitmap.createBitmap(editPicCustomView.getWidth(),
-				editPicCustomView.getHeight(), Bitmap.Config.ARGB_8888);
-				Canvas canvas = new Canvas(returnedBitmap);
-				Drawable bgDrawable = editPicCustomView.getBackground();
-				if (bgDrawable != null)
-					bgDrawable.draw(canvas);
-				else
-					canvas.drawColor(Color.WHITE);
-				editPicCustomView.draw(canvas);
-		        try {
-		        	File file = new File(Util.temPath);
-			            if (!file.exists())
-			            {
-			            	file.mkdirs();
-			            }
-
-					returnedBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(Util.temPath+"/"+fileName+".jpeg"));
-					Toast.makeText(picmomentActivity, "saved in "+Util.temPath+"/"+fileName+".jpeg", 1).show();
-					 ShareFragment shareFragment=new ShareFragment();
-					 Bundle bundle=new Bundle();
-						bundle.putString("filename", fileName);
-						shareFragment.setArguments(bundle);
-						
-						picmomentActivity.pushFragments(shareFragment, true, true);
-		        
-		        
-		        } catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					Toast.makeText(picmomentActivity, "saved faild", 1).show();
-	 				
-					
-				}
+	//	setGPUImageView(uri);	
+   // saveImage();
+	
 	}
 });
 
-mainContainer=(FrameLayout)homeFragmentView.findViewById(R.id.mainFrameContainer);
-editPicCustomView = new EditPicCustomView(picmomentActivity);
 editBack=(Button)homeFragmentView.findViewById(R.id.editBack);
 editBack.setOnClickListener(new OnClickListener() {
 	
@@ -183,10 +164,15 @@ editReset.setOnClickListener(new OnClickListener() {
 	
 	@Override
 	public void onClick(View arg0) {
-		// TODO Auto-generated method stub
+		editPicCustomView.unloadImages();
 		
 	}
 });
+
+mainContainer=(FrameLayout)homeFragmentView.findViewById(R.id.mainFrameContainer);
+editPicCustomView = new EditPicCustomView(picmomentActivity);
+mGPUImageView = (GPUImageView)homeFragmentView.findViewById(R.id.gpuimage);
+mGPUImageView.setVisibility(View.GONE);
 editPicCustomView.setBack(editBack);
 editPicCustomView.setReset(editReset);
 mainContainer.addView(editPicCustomView);
@@ -351,17 +337,7 @@ mainContainer.addView(editPicCustomView);
 			Rect rect = new Rect();
 			rect.right= editPicCustomView.getWidth();
 			rect.bottom=editPicCustomView.getHeight();
-			Resources res = getResources();
-			DisplayMetrics metrics = res.getDisplayMetrics();
-			int displayWidth = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
-					.max(metrics.widthPixels, metrics.heightPixels) : Math.min(
-					metrics.widthPixels, metrics.heightPixels);
-			int displayHeight = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
-					.min(metrics.widthPixels, metrics.heightPixels) : Math.max(
-					metrics.widthPixels, metrics.heightPixels);
-			Log.e("screen", displayWidth + " h: " + displayHeight);
-
-			Log.e("Rect",
+				Log.e("Rect",
 					"left: " + rect.left + " right: " + rect.right
 							+ " bootom: " + rect.bottom + " top: " + rect.top
 							+ " centerX:" + rect.centerX() + " centerY:"
@@ -381,8 +357,7 @@ mainContainer.addView(editPicCustomView);
 			public void frameClicked(int index) {
 				if (index==4) {
 					linearLayout.removeAllViews();
-					//linearLayout.addView(null);
-					
+						
 				}else {
 					
 					View stickerChild=PopupProvider.getEmoticonChild(picmomentActivity, new frameChild() {
@@ -552,5 +527,59 @@ mainContainer.addView(editPicCustomView);
 				dialog.show();
 				
 				
+	}
+	private String saveImage() {
+
+		fileName = Util.temPath+"/"+"PicMoment" + System.currentTimeMillis()+".jpg";
+		Bitmap returnedBitmap = Bitmap.createBitmap(editPicCustomView.getWidth(),
+				editPicCustomView.getHeight(), Bitmap.Config.ARGB_8888);
+				Canvas canvas = new Canvas(returnedBitmap);
+				Drawable bgDrawable = editPicCustomView.getBackground();
+				if (bgDrawable != null)
+					bgDrawable.draw(canvas);
+				else
+					canvas.drawColor(Color.WHITE);
+				editPicCustomView.draw(canvas);
+		        try {
+		        	File file = new File(Util.temPath);
+			            if (!file.exists())
+			            {
+			            	file.mkdirs();
+			            }
+
+					returnedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(fileName));
+					Toast.makeText(picmomentActivity, "saved in "+fileName, 1).show();
+					setGPUImageView(returnedBitmap);
+					
+					/* ShareFragment shareFragment=new ShareFragment();
+					 Bundle bundle=new Bundle();
+						bundle.putString("filename", fileName);
+						shareFragment.setArguments(bundle);
+						
+						picmomentActivity.pushFragments(shareFragment, true, true);*/
+		        
+		        
+		        } catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Toast.makeText(picmomentActivity, "saved faild", 1).show();
+	 				
+					
+				}
+				return fileName;
+	
+	}
+
+	private void setGPUImageView(final Bitmap imagePath) {
+		editPicCustomView.setVisibility(View.GONE);
+		mGPUImageView.setVisibility(View.VISIBLE);
+		mGPUImageView.setImage(imagePath);
+		
+	}
+
+	private void setEditPicCustomView() {
+		mGPUImageView.setVisibility(View.GONE);
+		editPicCustomView.setVisibility(View.VISIBLE);
+
 	}
 }

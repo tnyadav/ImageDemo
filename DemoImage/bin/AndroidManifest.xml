@@ -21,21 +21,23 @@
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     
     <application
-        android:name="com.pic.moment.UILApplication"
+        android:name="com.pic.moment.MultiImagePickerApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+         <service android:name="com.dg.libs.rest.services.HTTPRequestExecutorService" />
         <activity
-            android:name="com.pic.moment.PicmomentActivity"
-            android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar">
+            android:name="com.pic.moment.activity.PicmomentActivity"
+            android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:name=".multipleselection.MultiPhotoSelectActivity"></activity>
-    </application>
+        <activity android:name=".activity.MultiPhotoSelectActivity" android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait"></activity>
+        <activity android:name=".multiimagepicker.MultiImagePickerActivity" android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait"></activity>
+           </application>
 
 </manifest>

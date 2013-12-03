@@ -40,7 +40,7 @@ new Handler().postDelayed(new Runnable() {
 				 HomeFragment homeFragment = new HomeFragment();
 			      picmomentActivity.pushFragments(homeFragment, true, true);
 			}
-		}, 3000);
+		}, 0);
 	}
 
 	@Override

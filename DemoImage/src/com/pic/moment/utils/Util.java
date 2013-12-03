@@ -137,4 +137,13 @@ class SaveFileTask extends AsyncTask<Void, Void, Boolean>{
 		return null;
 	}
 }
+
+/*DisplayMetrics metrics = res.getDisplayMetrics();
+int displayWidth = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
+		.max(metrics.widthPixels, metrics.heightPixels) : Math.min(
+		metrics.widthPixels, metrics.heightPixels);
+int displayHeight = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? Math
+		.min(metrics.widthPixels, metrics.heightPixels) : Math.max(
+		metrics.widthPixels, metrics.heightPixels);
+Log.e("screen", displayWidth + " h: " + displayHeight);*/
 }
