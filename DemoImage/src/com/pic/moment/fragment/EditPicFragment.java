@@ -145,7 +145,7 @@ editShare.setOnClickListener(new OnClickListener() {
 	@Override
 	public void onClick(View arg0) {
 	//	setGPUImageView(uri);	
-   // saveImage();
+    saveImage();
 	
 	}
 });
@@ -548,7 +548,7 @@ mainContainer.addView(editPicCustomView);
 			            }
 
 					returnedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(fileName));
-					Toast.makeText(picmomentActivity, "saved in "+fileName, 1).show();
+					//Toast.makeText(picmomentActivity, "saved in "+fileName, 1).show();
 					setGPUImageView(returnedBitmap);
 					
 					/* ShareFragment shareFragment=new ShareFragment();
@@ -562,7 +562,7 @@ mainContainer.addView(editPicCustomView);
 		        } catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Toast.makeText(picmomentActivity, "saved faild", 1).show();
+				//	Toast.makeText(picmomentActivity, "saved faild", 1).show();
 	 				
 					
 				}
