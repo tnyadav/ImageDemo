@@ -172,7 +172,7 @@ editReset.setOnClickListener(new OnClickListener() {
 mainContainer=(FrameLayout)homeFragmentView.findViewById(R.id.mainFrameContainer);
 editPicCustomView = new EditPicCustomView(picmomentActivity);
 mGPUImageView = (GPUImageView)homeFragmentView.findViewById(R.id.gpuimage);
-mGPUImageView.setVisibility(View.GONE);
+//mGPUImageView.setVisibility(View.GONE);
 editPicCustomView.setBack(editBack);
 editPicCustomView.setReset(editReset);
 mainContainer.addView(editPicCustomView);
@@ -550,7 +550,8 @@ mainContainer.addView(editPicCustomView);
 					returnedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(fileName));
 					//Toast.makeText(picmomentActivity, "saved in "+fileName, 1).show();
 					setGPUImageView(returnedBitmap);
-					
+					mainContainer.bringToFront();
+					linearLayout.bringToFront();
 					/* ShareFragment shareFragment=new ShareFragment();
 					 Bundle bundle=new Bundle();
 						bundle.putString("filename", fileName);
@@ -571,7 +572,7 @@ mainContainer.addView(editPicCustomView);
 	}
 
 	private void setGPUImageView(final Bitmap imagePath) {
-		editPicCustomView.setVisibility(View.GONE);
+		//editPicCustomView.setVisibility(View.GONE);
 		mGPUImageView.setVisibility(View.VISIBLE);
 		mGPUImageView.setImage(imagePath);
 		
